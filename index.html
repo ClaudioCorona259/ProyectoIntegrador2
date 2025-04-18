@@ -1,11 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Turnero - Barbería/Estética</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    
+    <div class="container">
+        <h1>Reservá tu turno</h1>
+
+        <form id="form-turno">
+            <label for="servicio">Servicio:</label>
+            <select id="servicio" required>
+                <option value="">Seleccionar servicio</option>
+            </select>
+
+            <label for="empleado">Empleado:</label>
+            <select id="empleado" required>
+                <option value="">Seleccionar empleado</option>
+            </select>
+
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" required>
+
+            <label for="horario">Horario disponible:</label>
+            <select id="horario" required>
+                <option value="">Seleccionar horario</option>
+            </select>
+
+            <h3>Datos del cliente</h3>
+            <input type="text" id="nombre" placeholder="Nombre completo" required>
+            <input type="tel" id="telefono" placeholder="Teléfono" required>
+            <input type="email" id="email" placeholder="Email" required>
+
+            <button type="submit">Reservar Turno</button>
+        </form>
+
+        <div id="mensaje"></div>
+    </div>
+
+    <script src="script.js"></script>
+
+    <script src="main.js"></script>
 </body>
 </html>
