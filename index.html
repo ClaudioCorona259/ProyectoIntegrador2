@@ -2,45 +2,259 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Turnero - Barbería/Estética</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbería</title>
+    <link rel="stylesheet" href="styles/landing.css"> 
+    <link rel="stylesheet" href="styles/reservas.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Reservá tu turno</h1>
+    <div class="landing-container">
+        <header class="landing-header">
+            <img src="img/barberia_av.jpg" alt="Logo de la Barbería" class="logo">
+            <nav class="landing-nav">
+                <a href="#servicios">Servicios</a>
+                <a href="#reservas">Reservar Cita</a>
+                <a href="#contacto">Contacto</a>
+            </nav>
+        </header>
 
-        <form id="form-turno">
-            <label for="servicio">Servicio:</label>
-            <select id="servicio" required>
-                <option value="">Seleccionar servicio</option>
-            </select>
+        <section id="hero" class="hero-section">
+            <div class="hero-content">
+                <h1>Cortes Clásicos con un Toque Moderno</h1>
+                <p>Experimenta el arte del afeitado y los cortes de pelo personalizados en un ambiente único.</p>
+                <a href="#reservas" class="button primary">Reservar Ahora</a>
+            </div>
+            <div class="hero-image">
+                <img src="img/peluquero_trabajando.jpg" alt="Barbero trabajando" class="full-width">
+            </div>
+        </section>
 
-            <label for="empleado">Empleado:</label>
-            <select id="empleado" required>
-                <option value="">Seleccionar empleado</option>
-            </select>
+        <section id="servicios" class="services-section">
+            <h2>Nuestros Servicios</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Cortes de Cabello</h3>
+                    <p>Desde estilos clásicos hasta las últimas tendencias.</p>
+                    <ul class="service-list">
+                        <li>Corte Clásico</li>
+                        <li>Fade</li>
+                        <li>Undercut</li>
+                        <li>Corte para Caballero</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <h3>Afeitado y Barba</h3>
+                    <p>Afeitado tradicional y cuidado de barba experto.</p>
+                    <ul class="service-list">
+                        <li>Afeitado Clásico con Toalla Caliente</li>
+                        <li>Recorte y Diseño de Barba</li>
+                        <li>Mantenimiento de Bigote</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <h3>Tratamientos Capilares</h3>
+                    <p>Cuidado para un cabello sano y con estilo.</p>
+                    <ul class="service-list">
+                        <li>Tratamiento de Hidratación</li>
+                        <li>Mascarilla Capilar</li>
+                        <li>Tónico para el Cuero Cabelludo</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <h3>Coloración (Opcional)</h3>
+                    <p>Servicios de coloración para un cambio de look.</p>
+                    <ul class="service-list">
+                        <li>Coloración Completa</li>
+                        <li>Reflejos</li>
+                        <li>Canas Discretas</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-            <label for="fecha">Fecha:</label>
-            <input type="date" id="fecha" required>
+    </section>
 
-            <label for="horario">Horario disponible:</label>
-            <select id="horario" required>
-                <option value="">Seleccionar horario</option>
-            </select>
-
-            <h3>Datos del cliente</h3>
-            <input type="text" id="nombre" placeholder="Nombre completo" required>
-            <input type="tel" id="telefono" placeholder="Teléfono" required>
-            <input type="email" id="email" placeholder="Email" required>
-
-            <button type="submit">Reservar Turno</button>
+    <section id="nueva-reserva" class="new-reservation-section">
+        <h2>Realizar Nueva Reserva</h2>
+        <form id="nuevaReservaForm" class="reservation-form">
+            <div class="form-group">
+                <label for="nombreNueva">Nombre:</label>
+                <input type="text" id="nombreNueva" name="nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="apellidoNueva">Apellido:</label>
+                <input type="text" id="apellidoNueva" name="apellido" required>
+            </div>
+            <div class="form-group">
+                <label for="servicioNueva">Servicio:</label>
+                <select id="servicioNueva" name="servicio">
+                    <option value="corte">Corte de Cabello</option>
+                    <option value="afeitado">Afeitado/Barba</option>
+                    <option value="tratamiento">Tratamiento Capilar</option>
+                    <option value="coloracion">Coloración (Opcional)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="fechaNueva">Fecha:</label>
+                <input type="date" id="fechaNueva" name="fecha" required>
+            </div>
+            <div class="form-group">
+                <label for="horaNueva">Hora:</label>
+                <input type="time" id="horaNueva" name="hora" required>
+            </div>
+            <button type="submit" class="button primary">Solicitar Reserva</button>
         </form>
+    </section>
 
-        <div id="mensaje"></div>
+    <section id="gestion-reservas" class="reservation-management-section">
+        <h2>Gestionar Mis Reservas</h2>
+        <div id="lista-reservas">
+            <h3>Mis Próximas Reservas</h3>
+            <p id="mensaje-sin-reservas" style="display:none;">No tienes reservas próximas.</p>
+            <table id="tabla-reservas" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Servicio</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-tabla-reservas">
+                    </tbody>
+            </table>
+        </div>
+        <div id="formulario-gestion-reserva" style="display:none;">
+            <h3>Modificar Reserva</h3>
+            <form id="modificarReservaForm" class="reservation-form">
+                <input type="hidden" id="reservaIdModificar" name="reservaId">
+                <div class="form-group">
+                    <label for="nombreModificar">Nombre:</label>
+                    <input type="text" id="nombreModificar" name="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="apellidoModificar">Apellido:</label>
+                    <input type="text" id="apellidoModificar" name="apellido" required>
+                </div>
+                <div class="form-group">
+                    <label for="servicioModificar">Servicio:</label>
+                    <select id="servicioModificar" name="servicio">
+                        <option value="corte">Corte de Cabello</option>
+                        <option value="afeitado">Afeitado/Barba</option>
+                        <option value="tratamiento">Tratamiento Capilar</option>
+                        <option value="coloracion">Coloración (Opcional)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fechaModificar">Fecha:</label>
+                    <input type="date" id="fechaModificar" name="fecha" required>
+                </div>
+                <div class="form-group">
+                    <label for="horaModificar">Hora:</label>
+                    <input type="time" id="horaModificar" name="hora" required>
+                </div>
+                <button type="submit" class="button primary">Guardar Cambios</button>
+                <button type="button" class="button secondary" onclick="ocultarFormularioModificar()">Cancelar</button>
+            </form>
+        </div>
+        <div id="cartel-cancelar" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close-button" onclick="ocultarCartelCancelar()">&times;</span>
+                <p>¿Estás seguro de que deseas cancelar esta reserva?</p>
+                <button id="btnConfirmarCancelar" class="button primary">Sí, Cancelar</button>
+                <button class="button secondary" onclick="ocultarCartelCancelar()">No, Volver</button>
+                <input type="hidden" id="reservaIdCancelar">
+            </div>
+        </div>
+    </section>
+
+        <section id="gestion-reservas" class="reservation-management-section">
+            <h2>Gestionar Mis Reservas</h2>
+        
+            <div id="lista-reservas">
+                <h3>Mis Próximas Reservas</h3>
+                <p id="mensaje-sin-reservas" style="display:none;">No tienes reservas próximas.</p>
+                <table id="tabla-reservas" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Servicio</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpo-tabla-reservas">
+                        </tbody>
+                </table>
+            </div>
+        
+            <div id="formulario-gestion-reserva" style="display:none;">
+                <h3>Modificar Reserva</h3>
+                <form id="modificarReservaForm" class="reservation-form">
+                    <input type="hidden" id="reservaIdModificar" name="reservaId">
+                    <div class="form-group">
+                        <label for="nombreModificar">Nombre:</label>
+                        <input type="text" id="nombreModificar" name="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apellidoModificar">Apellido:</label>
+                        <input type="text" id="apellidoModificar" name="apellido" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="servicioModificar">Servicio:</label>
+                        <select id="servicioModificar" name="servicio">
+                            <option value="corte">Corte de Cabello</option>
+                            <option value="afeitado">Afeitado/Barba</option>
+                            <option value="tratamiento">Tratamiento Capilar</option>
+                            <option value="coloracion">Coloración (Opcional)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fechaModificar">Fecha:</label>
+                        <input type="date" id="fechaModificar" name="fecha" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="horaModificar">Hora:</label>
+                        <input type="time" id="horaModificar" name="hora" required>
+                    </div>
+                    <button type="submit" class="button primary">Guardar Cambios</button>
+                    <button type="button" class="button secondary" onclick="ocultarFormularioModificar()">Cancelar</button>
+                </form>
+            </div>
+        
+            <div id="cartel-cancelar" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close-button" onclick="ocultarCartelCancelar()">&times;</span>
+                    <p>¿Estás seguro de que deseas cancelar esta reserva?</p>
+                    <button id="btnConfirmarCancelar" class="button primary">Sí, Cancelar</button>
+                    <button class="button secondary" onclick="ocultarCartelCancelar()">No, Volver</button>
+                    <input type="hidden" id="reservaIdCancelar">
+                </div>
+            </div>
+        </section>
+        
+
+        <section id="contacto" class="contact-section">
+            <h2>Contacto</h2>
+            <div class="contact-info">
+                <p><i class="icon"></i> Dirección: [Tu Dirección Aquí]</p>
+                <p><i class="icon"></i> Teléfono: [Tu Número Aquí]</p>
+                <p><i class="icon"></i> Email: [Tu Email Aquí]</p>
+                <p><i class="icon"></i> Horario: [Tu Horario Aquí]</p>
+            </div>
+            </section>
+
+        <footer class="landing-footer">
+            <p>&copy; 2023 Tu Barbería con Estilo. Todos los derechos reservados.</p>
+        </footer>
     </div>
 
-    <script src="script.js"></script>
-
-    <script src="main.js"></script>
-</body>
+    <script src="script.js"></script> </body>
 </html>
