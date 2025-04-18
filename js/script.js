@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const tablaReservas = document.getElementById('tabla-reservas');
     const cuerpoTablaReservas = document.getElementById('cuerpo-tabla-reservas');
     const mensajeSinReservas = document.getElementById('mensaje-sin-reservas');
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Función para guardar los cambios de la reserva
-    modificarReservaForm.addEventListener('submit', function(event) {
+    modificarReservaForm.addEventListener('submit', function (event) {
         event.preventDefault();
         const reservaId = document.getElementById('reservaIdModificar').value;
         const nombre = document.getElementById('nombreModificar').value;
@@ -98,22 +98,22 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datosModificados)
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            alert('Reserva modificada con éxito.');
-            formularioGestionReserva.style.display = 'none';
-            document.getElementById('lista-reservas').style.display = 'block';
-            cargarReservas(); // Recargar la lista de reservas
-        })
-        .catch(error => {
-            console.error('Error al modificar la reserva:', error);
-            alert('No se pudo modificar la reserva.');
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Reserva modificada con éxito.');
+                formularioGestionReserva.style.display = 'none';
+                document.getElementById('lista-reservas').style.display = 'block';
+                cargarReservas(); // Recargar la lista de reservas
+            })
+            .catch(error => {
+                console.error('Error al modificar la reserva:', error);
+                alert('No se pudo modificar la reserva.');
+            });
     });
 
     // Función para mostrar el cartel de cancelar
@@ -128,26 +128,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Función para confirmar la cancelación de la reserva
-    btnConfirmarCancelar.addEventListener('click', function() {
+    btnConfirmarCancelar.addEventListener('click', function () {
         const reservaId = reservaIdCancelarInput.value;
         fetch(`${API_RESERVAS_URL}/${reservaId}`, {
             method: 'DELETE'
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            alert('Reserva cancelada con éxito.');
-            cartelCancelar.style.display = 'none';
-            cargarReservas(); // Recargar la lista de reservas
-        })
-        .catch(error => {
-            console.error('Error al cancelar la reserva:', error);
-            alert('No se pudo cancelar la reserva.');
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Reserva cancelada con éxito.');
+                cartelCancelar.style.display = 'none';
+                cargarReservas(); // Recargar la lista de reservas
+            })
+            .catch(error => {
+                console.error('Error al cancelar la reserva:', error);
+                alert('No se pudo cancelar la reserva.');
+            });
     });
 
     // Función para ocultar el formulario de modificar
@@ -160,12 +160,12 @@ document.addEventListener('DOMContentLoaded', function() {
     cargarReservas();
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // ... (tu código JavaScript existente) ...
 
     const nuevaReservaForm = document.getElementById('nuevaReservaForm');
 
-    nuevaReservaForm.addEventListener('submit', function(event) {
+    nuevaReservaForm.addEventListener('submit', function (event) {
         event.preventDefault();
 
         const nombre = document.getElementById('nombreNueva').value;
@@ -191,22 +191,22 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify(nuevaReservaData)
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Nueva reserva creada con éxito:', data);
-            alert('Su reserva ha sido realizada con éxito. Nos pondremos en contacto con usted para confirmarla.');
-            nuevaReservaForm.reset();
-            cargarReservas(); // Si quieres recargar la lista de reservas después de una nueva reserva
-        })
-        .catch(error => {
-            console.error('Error al crear la nueva reserva:', error);
-            alert('Hubo un error al realizar su reserva. Por favor, intente nuevamente más tarde.');
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Nueva reserva creada con éxito:', data);
+                alert('Su reserva ha sido realizada con éxito. Nos pondremos en contacto con usted para confirmarla.');
+                nuevaReservaForm.reset();
+                cargarReservas(); // Si quieres recargar la lista de reservas después de una nueva reserva
+            })
+            .catch(error => {
+                console.error('Error al crear la nueva reserva:', error);
+                alert('Hubo un error al realizar su reserva. Por favor, intente nuevamente más tarde.');
+            });
     });
 
     // ... (el resto de tu código JavaScript para la gestión de reservas) ...
