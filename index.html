@@ -1,260 +1,165 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barbería</title>
-    <link rel="stylesheet" href="styles/landing.css"> 
-    <link rel="stylesheet" href="styles/reservas.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/c29290b7a8.js" crossorigin="anonymous"></script>
+    <title>Document</title>
 </head>
 <body>
-    <div class="landing-container">
-        <header class="landing-header">
-            <img src="img/barberia_av.jpg" alt="Logo de la Barbería" class="logo">
-            <nav class="landing-nav">
-                <a href="#servicios">Servicios</a>
-                <a href="#reservas">Reservar Cita</a>
-                <a href="#contacto">Contacto</a>
+    <main class="wrapper">
+        <header class="header">
+            <nav>
+                <ul>
+                    <img src="Assets/logo-02.svg" alt="logo">
+                    <li>Inicio</li>
+                    <li>Nuestros Servicios</li>
+                    <li>Contacto</li>
+                </ul>
+                <ul class="header_list">
+                    <li><a href="#">Iniciar Sesión</a></li>
+                    <li class="nav_btn"><a href="#">Registrarse</a></li>
+                </ul>
             </nav>
         </header>
-
-        <section id="hero" class="hero-section">
-            <div class="hero-content">
-                <h1>Cortes Clásicos con un Toque Moderno</h1>
-                <p>Experimenta el arte del afeitado y los cortes de pelo personalizados en un ambiente único.</p>
-                <a href="#reservas" class="button primary">Reservar Ahora</a>
+        <section class="hero">
+            <h1>Bienvenido a la mejor barbería de la ciudad</h1>
+            <p>En nuestra barbería, combinamos estilo y profesionalismo para ofrecerte una experiencia única. Agenda tu turno hoy y transforma tu look.</p>
+            <div>
+                <button class="btn">Agendar</button>
+                <button class="btn">Conocer</button>
             </div>
-            <div class="hero-image">
-                <img src="img/peluquero_trabajando.jpg" alt="Barbero trabajando" class="full-width">
+            <img src="Assets/hero_bg.jpg" alt="">
+        </section>
+        <section class="services_section">
+            <div class="services-header">
+                <h2>Descubre nuestros servicios de Barbería y Estética</h2>
+                <p>En nuestra barbería, ofrecemos una experiencia única que combina tradición y modernidad. Nuestros expertos estilistas están listos para transformar tu look con cortes de pelo de alta calidad. Además, contamos con tratamientos faciales que revitalizan tu piel y te hacen sentir renovado.</p>
+            </div>
+            <div>
+                <article>
+                    <img src="Assets/services_card1.jpg" alt="">
+                    <h3>Cortes Personalizados para Cada Estilo</h3>
+                    <p>Cada corte es una obra de arte adaptada a ti.</p>
+                </article>
+                <article>
+                    <img src="Assets/services_card3.jpg" alt="">
+                    <h3>Tratamientos Faciales para una Piel Radiante</h3>
+                    <p>Revitaliza tu rostro con nuestros exclusivos tratamientos.</p>
+                </article>
+                <article>
+                    <img src="Assets/services_card2.jpg" alt="">
+                    <h3>Afeitado Clásico con Toques Modernos</h3>
+                    <p>Disfruta de un afeitado suave y preciso.</p>
+                </article>
             </div>
         </section>
-
-        <section id="servicios" class="services-section">
-            <h2>Nuestros Servicios</h2>
-            <div class="services-grid">
-                <div class="service-card">
-                    <h3>Cortes de Cabello</h3>
-                    <p>Desde estilos clásicos hasta las últimas tendencias.</p>
-                    <ul class="service-list">
-                        <li>Corte Clásico</li>
-                        <li>Fade</li>
-                        <li>Undercut</li>
-                        <li>Corte para Caballero</li>
-                    </ul>
-                </div>
-                <div class="service-card">
-                    <h3>Afeitado y Barba</h3>
-                    <p>Afeitado tradicional y cuidado de barba experto.</p>
-                    <ul class="service-list">
-                        <li>Afeitado Clásico con Toalla Caliente</li>
-                        <li>Recorte y Diseño de Barba</li>
-                        <li>Mantenimiento de Bigote</li>
-                    </ul>
-                </div>
-                <div class="service-card">
-                    <h3>Tratamientos Capilares</h3>
-                    <p>Cuidado para un cabello sano y con estilo.</p>
-                    <ul class="service-list">
-                        <li>Tratamiento de Hidratación</li>
-                        <li>Mascarilla Capilar</li>
-                        <li>Tónico para el Cuero Cabelludo</li>
-                    </ul>
-                </div>
-                <div class="service-card">
-                    <h3>Coloración (Opcional)</h3>
-                    <p>Servicios de coloración para un cambio de look.</p>
-                    <ul class="service-list">
-                        <li>Coloración Completa</li>
-                        <li>Reflejos</li>
-                        <li>Canas Discretas</li>
-                    </ul>
-                </div>
+        <section class="hero2">
+            <article>
+                <h2>Tu estilo, nuestra pasión</h2>
+            <p>Ofrecemos cortes de cabello, afeitados y tratamientos de belleza para realzar tu imagen.</p>
+            </article>
+        </section>
+        <section class="about_section">
+            <div class="about_header">
+                <h2>Descubre los beneficios de nuestra barbería</h2>
+                <p>En nuestra barbería, te ofrecemos una experiencia profesional inigualable. Utilizamos productos de alta calidad en un ambiente relajante para que disfrutes de cada visita.</p>
+                <button class="btn">Más</button>
+            </div>
+            <img src="Assets/about_bg.jpg" alt="">
+        </section>
+        <section class="enhanced_section">
+            <h2>Agenda tu turno fácilmente</h2>
+            <p>No esperes más, reserva tu cita en línea y disfruta de un servicio excepcional.</p>
+            <div class="enhanced_btn">
+                <button class="btn">Reservar</button>
+                <button class="btn">Más</button>
+            </div>    
+        </section>
+        <section class="question_section">
+            <h2>Preguntas</h2>
+            <p>Aquí encontrarás respuestas a las preguntas más frecuentes de nuestros clientes.</p>
+            <div class="question-list">
+                <article>
+                    <h3>¿Cómo puedo reservar?</h3>
+                    <p>Puedes reservar tu turno fácilmente a través de nuestra página. Solo selecciona el servicio y el horario que prefieras. Recibirás una confirmación por correo electrónico.</p>
+                </article>
+                <article>
+                    <h3>¿Qué servicios ofrecen?</h3>
+                    <p>Ofrecemos una variedad de servicios de barbería y estética. Desde cortes de cabello hasta tratamientos faciales. Consulta nuestra lista completa en la sección de servicios.</p>
+                </article>
+                <article>
+                    <h3>¿Puedo cancelar mi cita?</h3>
+                    <p>Sí, puedes cancelar tu cita hasta 24 horas antes. Simplemente accede a tu cuenta y selecciona la opción de cancelar. Si necesitas ayuda, contáctanos.</p>
+                </article>
+                <article>
+                    <h3>¿Hay descuentos disponibles?</h3>
+                    <p>Ofrecemos descuentos especiales en ciertos días de la semana. También tenemos promociones para nuevos clientes. Mantente atento a nuestras redes sociales para más información.</p>
+                </article>
+                <article>
+                    <h3>¿Cómo puedo pagar?</h3>
+                    <p>Aceptamos diversas formas de pago, incluyendo tarjetas de crédito y débito. También puedes pagar en efectivo. Asegúrate de elegir tu opción preferida al reservar.</p>
+                </article>
+            </div>
+            <h2>¿Aún tienes dudas?</h2>
+            <p>Estamos aquí para ayudarte.</p>
+            <button class="btn">Contactar</button>
+        </section>
+        <section class="contact_section">
+            <div>
+                <h2>Contáctanos</h2>
+                <p>Estamos aquí para ayudarte con tus consultas.</p>
+            </div>
+            <div class="contact_list">
+                <article>
+                    <img src="Assets/contact_mail_icon.svg" alt="">
+                    <h3>Correo</h3>
+                    <p>Envíanos un correo para más información.</p>
+                    <p>hello@example.com</p>
+                </article>
+                <article>
+                    <img src="Assets/contact_phone_icon.svg" alt="">
+                    <h3>Teléfono</h3>
+                    <p>LLámanos para más información.</p>
+                    <p>+1 (555) 123-4567</p>
+                </article>
+                <article>
+                    <img src="Assets/contact_ub_icon.svg" alt="">
+                    <h3>Ubicación</h3>
+                    <p>Visítanos en nuestra ubicación central.</p>
+                    <p>123 Calle Ejemplo, Ciudad, AU</p>
+                </article>
             </div>
         </section>
-
-    </section>
-
-    <section id="nueva-reserva" class="new-reservation-section">
-        <h2>Realizar Nueva Reserva</h2>
-        <form id="nuevaReservaForm" class="reservation-form">
-            <div class="form-group">
-                <label for="nombreNueva">Nombre:</label>
-                <input type="text" id="nombreNueva" name="nombre" required>
-            </div>
-            <div class="form-group">
-                <label for="apellidoNueva">Apellido:</label>
-                <input type="text" id="apellidoNueva" name="apellido" required>
-            </div>
-            <div class="form-group">
-                <label for="servicioNueva">Servicio:</label>
-                <select id="servicioNueva" name="servicio">
-                    <option value="corte">Corte de Cabello</option>
-                    <option value="afeitado">Afeitado/Barba</option>
-                    <option value="tratamiento">Tratamiento Capilar</option>
-                    <option value="coloracion">Coloración (Opcional)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="fechaNueva">Fecha:</label>
-                <input type="date" id="fechaNueva" name="fecha" required>
-            </div>
-            <div class="form-group">
-                <label for="horaNueva">Hora:</label>
-                <input type="time" id="horaNueva" name="hora" required>
-            </div>
-            <button type="submit" class="button primary">Solicitar Reserva</button>
-        </form>
-    </section>
-
-    <section id="gestion-reservas" class="reservation-management-section">
-        <h2>Gestionar Mis Reservas</h2>
-        <div id="lista-reservas">
-            <h3>Mis Próximas Reservas</h3>
-            <p id="mensaje-sin-reservas" style="display:none;">No tienes reservas próximas.</p>
-            <table id="tabla-reservas" style="display:none;">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Servicio</th>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="cuerpo-tabla-reservas">
-                    </tbody>
-            </table>
-        </div>
-        <div id="formulario-gestion-reserva" style="display:none;">
-            <h3>Modificar Reserva</h3>
-            <form id="modificarReservaForm" class="reservation-form">
-                <input type="hidden" id="reservaIdModificar" name="reservaId">
-                <div class="form-group">
-                    <label for="nombreModificar">Nombre:</label>
-                    <input type="text" id="nombreModificar" name="nombre" required>
-                </div>
-                <div class="form-group">
-                    <label for="apellidoModificar">Apellido:</label>
-                    <input type="text" id="apellidoModificar" name="apellido" required>
-                </div>
-                <div class="form-group">
-                    <label for="servicioModificar">Servicio:</label>
-                    <select id="servicioModificar" name="servicio">
-                        <option value="corte">Corte de Cabello</option>
-                        <option value="afeitado">Afeitado/Barba</option>
-                        <option value="tratamiento">Tratamiento Capilar</option>
-                        <option value="coloracion">Coloración (Opcional)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="fechaModificar">Fecha:</label>
-                    <input type="date" id="fechaModificar" name="fecha" required>
-                </div>
-                <div class="form-group">
-                    <label for="horaModificar">Hora:</label>
-                    <input type="time" id="horaModificar" name="hora" required>
-                </div>
-                <button type="submit" class="button primary">Guardar Cambios</button>
-                <button type="button" class="button secondary" onclick="ocultarFormularioModificar()">Cancelar</button>
-            </form>
-        </div>
-        <div id="cartel-cancelar" class="modal" style="display:none;">
-            <div class="modal-content">
-                <span class="close-button" onclick="ocultarCartelCancelar()">&times;</span>
-                <p>¿Estás seguro de que deseas cancelar esta reserva?</p>
-                <button id="btnConfirmarCancelar" class="button primary">Sí, Cancelar</button>
-                <button class="button secondary" onclick="ocultarCartelCancelar()">No, Volver</button>
-                <input type="hidden" id="reservaIdCancelar">
-            </div>
-        </div>
-    </section>
-
-        <section id="gestion-reservas" class="reservation-management-section">
-            <h2>Gestionar Mis Reservas</h2>
-        
-            <div id="lista-reservas">
-                <h3>Mis Próximas Reservas</h3>
-                <p id="mensaje-sin-reservas" style="display:none;">No tienes reservas próximas.</p>
-                <table id="tabla-reservas" style="display:none;">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Servicio</th>
-                            <th>Fecha</th>
-                            <th>Hora</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="cuerpo-tabla-reservas">
-                        </tbody>
-                </table>
-            </div>
-        
-            <div id="formulario-gestion-reserva" style="display:none;">
-                <h3>Modificar Reserva</h3>
-                <form id="modificarReservaForm" class="reservation-form">
-                    <input type="hidden" id="reservaIdModificar" name="reservaId">
-                    <div class="form-group">
-                        <label for="nombreModificar">Nombre:</label>
-                        <input type="text" id="nombreModificar" name="nombre" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="apellidoModificar">Apellido:</label>
-                        <input type="text" id="apellidoModificar" name="apellido" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="servicioModificar">Servicio:</label>
-                        <select id="servicioModificar" name="servicio">
-                            <option value="corte">Corte de Cabello</option>
-                            <option value="afeitado">Afeitado/Barba</option>
-                            <option value="tratamiento">Tratamiento Capilar</option>
-                            <option value="coloracion">Coloración (Opcional)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="fechaModificar">Fecha:</label>
-                        <input type="date" id="fechaModificar" name="fecha" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="horaModificar">Hora:</label>
-                        <input type="time" id="horaModificar" name="hora" required>
-                    </div>
-                    <button type="submit" class="button primary">Guardar Cambios</button>
-                    <button type="button" class="button secondary" onclick="ocultarFormularioModificar()">Cancelar</button>
-                </form>
-            </div>
-        
-            <div id="cartel-cancelar" class="modal" style="display:none;">
-                <div class="modal-content">
-                    <span class="close-button" onclick="ocultarCartelCancelar()">&times;</span>
-                    <p>¿Estás seguro de que deseas cancelar esta reserva?</p>
-                    <button id="btnConfirmarCancelar" class="button primary">Sí, Cancelar</button>
-                    <button class="button secondary" onclick="ocultarCartelCancelar()">No, Volver</button>
-                    <input type="hidden" id="reservaIdCancelar">
+        <footer>
+            <div class="footer_header">
+                <img src="Assets/logo-02.svg" alt="">
+                <div>
+                    <h3>Suscribirse</h3>
+                    <p>Únete a nuestro boletín para recibir novedades y lanzamientos.</p>
+                    <input type="text" placeholder="Introduce tu correo">
+                    <button class="btn">Suscribir</button>
+                    <p>Al suscribirte, aceptas nuestra Política de Privacidad y consientes recibir actualizaciones.</p>
                 </div>
             </div>
-        </section>
-        
-
-        <section id="contacto" class="contact-section">
-            <h2>Contacto</h2>
-            <div class="contact-info">
-                <p><i class="icon"></i> Dirección: [Tu Dirección Aquí]</p>
-                <p><i class="icon"></i> Teléfono: [Tu Número Aquí]</p>
-                <p><i class="icon"></i> Email: [Tu Email Aquí]</p>
-                <p><i class="icon"></i> Horario: [Tu Horario Aquí]</p>
+            <div class="footer_list">
+                    <ul>
+                        <li>© 2025 Barber. Todos los derechos reservados.</li>
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Términos de Servicio</a></li>
+                        <li><a href="#">Configuración de Cookies</a></li>
+                    </ul>
+                    <ul>
+                        <li><i class="fa-brands fa-facebook"></i></li>
+                        <li><i class="fa-brands fa-instagram"></i></li>
+                        <li><i class="fa-brands fa-x-twitter"></i></li>
+                        <li><i class="fa-brands fa-youtube"></i></li>
+                    </ul>
             </div>
-            </section>
-
-        <footer class="landing-footer">
-            <p>&copy; 2023 Tu Barbería con Estilo. Todos los derechos reservados.</p>
         </footer>
-    </div>
+    </main>
 
-    <script src="script.js"></script> </body>
+    <script src="js/script.js"></script> </body>
+</body>
 </html>
