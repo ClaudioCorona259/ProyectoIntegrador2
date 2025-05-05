@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/forms.css">
+</head>
+<body>
+    <main>
+        <header class="header">
+            <nav>
+                <ul>
+                    <img src="Assets/logo-02.svg" alt="logo">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#Servicios">Nuestros Servicios</a></li>
+                    <li><a href="index.html#Contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </header>
+        <section class="section_form">
+            <h2>Registrarse</h2>
+            <form action="/login" method="POST">
+                <label for="name">
+                    Nombre
+                    <input type="text" id="name" name="name" required placeholder="Ingrese su Nombre"> 
+                </label>
+                <label for="surname">
+                    Apellido
+                    <input type="text" id="surname" name="surname" required placeholder="Ingrese su Apellido">
+                </label>
+                <label for="email">
+                    Email
+                    <input type="email" id="email" name="email" required placeholder="Ingrese su Email">
+                </label>
+                <label for="password">
+                    Constraseña
+                    <input type="password" id="password" name="password" required placeholder="Ingrese su Contraseña">
+                </label>
+                <label for="password_conf">
+                    Reingrese Contraseña
+                    <input type="password" id="password_conf" name="password_conf" required placeholder="Reingrese su Contraseña">
+                </label>
+                <label for="tel">
+                    Teléfono
+                    <input type="tel" id="tel" name="tel" required placeholder="Ingrese su Teléfono">
+                </label>
+                <button class="btn" type="submit">Ingresar</button>
+            </form>
+            <div class="form_footer">
+                <p>¿Ya tienes una cuenta? <a href="login.html">Iniciar Sesión</a></p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

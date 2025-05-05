@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/forms.css">
+</head>
+<body>
+    <main class="main_login">
+        <header class="header">
+            <nav>
+                <ul>
+                    <img src="Assets/logo-02.svg" alt="logo">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#Servicios">Nuestros Servicios</a></li>
+                    <li><a href="index.html#Contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </header>
+        <section class="section_form login_form">
+            <h2>Iniciar Sesión</h2>
+            <form action="/login" method="POST">
+                <label for="email">
+                    Email
+                    <input type="email" id="email" name="email" required placeholder="Ingrese su Email"> 
+                </label>
+                <label for="password">
+                    Contraseña
+                    <input type="password" id="password" name="password" required placeholder="Ingrese su Contraseña">
+                </label>
+                <button class="btn" type="submit">Ingresar</button>
+            </form>
+            <div class="form_footer">
+                <p>¿No tienes una cuenta? <a href="signup.html">Registrarse</a></p>
+            </div>
+        </section>
+        <div></div>
+    </main>
+</body>
+</html>

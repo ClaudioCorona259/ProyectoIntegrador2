@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Turno</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/forms.css">
+</head>
+<body>
+    <main>
+        <header class="header">
+            <nav>
+                <ul>
+                    <img src="Assets/logo-02.svg" alt="logo">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#Servicios">Nuestros Servicios</a></li>
+                    <li><a href="index.html#Contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </header>
+        <section class="section_form">
+            <h2>Nuevo Turno</h2>
+            <form action="" method="POST">
+                <label for="nombre">
+                    Nombre
+                    <input type="text" id="nombre" name="nombre" placeholder="NombreDelCliente" disabled> 
+                </label>
+                <label for="email">
+                    Email
+                    <input type="email" id="email" name="email" placeholder="EmailDelCliente" disabled> 
+                </label>
+                <label for="tel">
+                    Teléfono
+                    <input type="tel" id="tel" name="tel" placeholder="TeléfonoDelCliente" disabled>
+                </label>
+                <label for="servicio">
+                    Servicio
+                    <input list="servicios" id="servicio" name="servicio" placeholder="Seleccione un Servicio">
+                </label>
+                <datalist id="servicios">
+                    <option value="Corte de Pelo">
+                    <option value="Afeitado">
+                    <option value="Tinte de Cabello">
+                    <option value="Lavado y Secado">
+                </datalist>
+                <label for="servicio">
+                    Empleados
+                    <input list="empleados" id="empleado" name="empleado" placeholder="Seleccione un Barbero">
+                </label>
+                <datalist id="empleados">
+                    <option value="Claudio">
+                    <option value="Guada">
+                    <option value="Nacho">
+                    <option value="Nacho O">
+                </datalist>
+                <button class="btn" type="submit">Ingresar</button>
+            </form>
+            <div class="form_footer">
+                <p><a href="turnos_clientes.html">Ir a Mis Turnos</a></p>
+            </div>
+        </section>
+        <div></div>
+    </main>
+</body>
+</html>
