@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,51 +8,46 @@
     <title>Turnos Cliente</title>
 </head>
 <body>
+    <header class="header">
+        <nav>
+            <ul>
+                <!-- La navegación se cargará dinámicamente -->
+            </ul>
+            <ul class="header_list">
+                <!-- El menú de usuario se cargará dinámicamente -->
+            </ul>
+        </nav>
+    </header>
+
     <main>
-        <header class="header">
-            <nav>
-                <ul>
-                    <img src="Assets/logo-02.svg" alt="logo">
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="#Servicios">Nuestros Servicios</a></li>
-                    <li><a href="#Contacto">Contacto</a></li>
-                </ul>
-            </nav>
-        </header>
         <section class="turnos_section">
             <header>
                 <h1>Bienvenido a la sección de Clientes</h1>
                 <p>Aquí puedes ver tus turnos y detalles de tu cuenta.</p>
             </header>
             <table id="tabla-reservas">
-            <thead>
-                <tr>
-                    <th>Turno</th>
-                    <th>Empleado</th>
-                    <th>Servicio</th>
-                    <th>Fecha</th>
-                    <th>HoraInicio</th>
-                    <th>HoraFin</th>
-                    <th>Estado</th>
-                    <th>FechaModificacion</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="cuerpo-tabla-reservas">
-                <tr>
-                    <td>1</td>
-                    <td>Claudio</td>
-                    <td>Coloracion</td>
-                    <td>2025-05-04</td>
-                    <td>09:00</td>
-                    <td>10:00</td>
-                    <td>Pendiente</td>
-                    <td>2025-05-04 08:30:00</td>
-                    <td><button class="btn"><a href="">Modificar</a></button></td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>Turno</th>
+                        <th>Empleado</th>
+                        <th>Servicio</th>
+                        <th>Fecha</th>
+                        <th>HoraInicio</th>
+                        <th>HoraFin</th>
+                        <th>Estado</th>
+                        <th>FechaModificacion</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-tabla-reservas">
+                    <!-- Los turnos se cargarán dinámicamente aquí -->
+                </tbody>
             </table>
             <button class="btn"><a href="registrar_turno.html">Agendar nuevo turno</a></button>
         </section>
     </main>
+
+    <script src="js/navigation.js"></script>
+    <script src="js/client.js"></script>
 </body>
 </html>
