@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Empleado</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><img src="Assets/logo.png" alt="Logo"></li>
+            <li><a href="index.html">Inicio</a></li>
+        </ul>
+        <ul class="header_list">
+            <li><a href="#" id="logoutBtn">Cerrar Sesión</a></li>
+        </ul>
+    </nav>
+
+    <main class="admin-container">
+        <h1>Panel de Empleado</h1>
+        
+        <section class="admin-section">
+            <h2>Gestión de Turnos</h2>
+            
+            <div class="admin-actions">
+                <button class="btn" id="viewTurnsBtn">Ver Turnos Asignados</button>
+                <button class="btn" id="updateStatusBtn">Actualizar Estado</button>
+            </div>
+
+            <div class="turns-list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Servicio</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="turnsTableBody">
+                        <!-- Los turnos se cargarán dinámicamente aquí -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Modal para actualizar estado -->
+        <div id="statusModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Actualizar Estado del Turno</h2>
+                <form id="statusForm">
+                    <div class="form-group">
+                        <label for="turnStatus">Estado:</label>
+                        <select id="turnStatus" required>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="en_proceso">En Proceso</option>
+                            <option value="completado">Completado</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="statusNotes">Notas:</label>
+                        <textarea id="statusNotes" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Actualizar</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/empleado.js"></script>
+</body>
+</html> 
