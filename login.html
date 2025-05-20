@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +21,15 @@
         </header>
         <section class="section_form login_form">
             <h2>Iniciar Sesión</h2>
-            <form action="/login" method="POST">
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="userType">Tipo de Usuario:</label>
+                    <select id="userType" name="userType" required>
+                        <option value="cliente">Cliente</option>
+                        <option value="empleado">Empleado</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
                 <label for="email">
                     Email
                     <input type="email" id="email" name="email" required placeholder="Ingrese su Email"> 
@@ -34,9 +42,11 @@
             </form>
             <div class="form_footer">
                 <p>¿No tienes una cuenta? <a href="signup.html">Registrarse</a></p>
+                <p><a href="#" id="forgotPassword">¿Olvidaste tu contraseña?</a></p>
             </div>
         </section>
         <div></div>
     </main>
+    <script src="js/login.js"></script>
 </body>
 </html>
