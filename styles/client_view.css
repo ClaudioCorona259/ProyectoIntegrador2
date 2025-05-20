@@ -32,3 +32,22 @@
         }
     }
 }
+
+.btn-cancelar {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.btn-cancelar:hover {
+    background-color: #cc0000;
+}
+
+.btn-cancelar:active {
+    transform: scale(0.98);
+}
