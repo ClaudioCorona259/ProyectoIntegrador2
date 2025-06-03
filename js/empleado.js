@@ -6,10 +6,11 @@ function checkEmployeeAuth() {
     }
 }
 
-// Cargar los turnos asignados al empleado
+// Cargar los turnos del empleado
 async function loadTurns() {
     try {
-        const response = await fetch('http://localhost:3000/api/turns/employee', {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const response = await fetch(`http://localhost:3000/api/Turnos/Empleado/${user.id}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -30,14 +31,16 @@ function displayTurns(turns) {
     turns.forEach(turn => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${turn.id}</td>
-            <td>${turn.clientName}</td>
-            <td>${formatDate(turn.date)}</td>
-            <td>${turn.time}</td>
-            <td>${turn.service}</td>
-            <td>${formatStatus(turn.status)}</td>
+            <td>${turn.TurnoID}</td>
+            <td>${turn.ClienteNombre}</td>
+            <td>${turn.ServicioNombre}</td>
+            <td>${formatDate(turn.Fecha)}</td>
+            <td>${formatTime(turn.HoraInicio)}</td>
+            <td>${formatTime(turn.HoraFin)}</td>
+            <td>${turn.Estado}</td>
+            <td>${formatDateTime(turn.FechaModificacion)}</td>
             <td class="action-buttons">
-                <button class="btn-edit" onclick="updateTurnStatus(${turn.id})">Actualizar Estado</button>
+                <button class="btn-edit" onclick="updateTurnStatus(${turn.TurnoID})">Actualizar Estado</button>
             </td>
         `;
         tbody.appendChild(tr);
@@ -46,62 +49,34 @@ function displayTurns(turns) {
 
 // Formatear fecha
 function formatDate(dateString) {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('es-ES', options);
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-AR');
 }
 
-// Formatear estado
-function formatStatus(status) {
-    const statusMap = {
-        'pendiente': 'Pendiente',
-        'en_proceso': 'En Proceso',
-        'completado': 'Completado',
-        'cancelado': 'Cancelado'
-    };
-    return statusMap[status] || status;
+// Formatear hora
+function formatTime(timeString) {
+    return timeString.substring(0, 5);
+}
+
+// Formatear fecha y hora
+function formatDateTime(dateTimeString) {
+    const date = new Date(dateTimeString);
+    return date.toLocaleString('es-AR');
 }
 
 // Actualizar estado del turno
 async function updateTurnStatus(turnId) {
-    try {
-        const response = await fetch(`http://localhost:3000/api/turns/${turnId}`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-        const turn = await response.json();
-        
-        document.getElementById('turnStatus').value = turn.status;
-        document.getElementById('statusNotes').value = turn.notes || '';
-        
-        // Guardar el ID del turno en el formulario
-        document.getElementById('statusForm').dataset.turnId = turnId;
-        
-        openModal();
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Error al cargar datos del turno');
-    }
-}
-
-// Manejar el formulario de actualización de estado
-async function handleStatusForm(event) {
-    event.preventDefault();
-    
-    const turnId = event.target.dataset.turnId;
-    const statusData = {
-        status: document.getElementById('turnStatus').value,
-        notes: document.getElementById('statusNotes').value
-    };
+    const newStatus = document.getElementById('turnStatus').value;
+    const notes = document.getElementById('statusNotes').value;
 
     try {
-        const response = await fetch(`http://localhost:3000/api/turns/${turnId}/status`, {
+        const response = await fetch(`http://localhost:3000/api/Turnos/${turnId}/Estado`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             },
-            body: JSON.stringify(statusData)
+            body: JSON.stringify(newStatus)
         });
 
         if (response.ok) {

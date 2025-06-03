@@ -59,12 +59,15 @@ async function handleLogin(event) {
     }
 
     try {
-        const response = await fetch('http://localhost:3000/api/auth/login', {
+        const response = await fetch('http://localhost:3000/api/Auth/Login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, password, userType })
+            body: JSON.stringify({ 
+                Usuario: email, 
+                Clave: password 
+            })
         });
 
         const data = await response.json();
@@ -72,10 +75,16 @@ async function handleLogin(event) {
         if (response.ok) {
             // Guardar el token y la información del usuario
             localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
+            localStorage.setItem('user', JSON.stringify({
+                id: data.UsuarioID,
+                name: data.Nombre,
+                surname: data.Apellido,
+                email: data.Email,
+                role: data.Rol
+            }));
 
             // Redirigir según el rol
-            switch (data.user.role) {
+            switch (data.Rol) {
                 case 'admin':
                     window.location.href = 'admin-panel.html';
                     break;

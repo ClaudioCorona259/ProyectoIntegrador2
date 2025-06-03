@@ -3,51 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles/styles.css">
-    <link rel="stylesheet" href="styles/client_view.css">
-    <title>Turnos Cliente</title>
+    <title>Turnos - Cliente</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/turns.css">
 </head>
 <body>
-    <header class="header">
-        <nav>
-            <ul>
-                <!-- La navegación se cargará dinámicamente -->
-            </ul>
-            <ul class="header_list">
-                <!-- El menú de usuario se cargará dinámicamente -->
-            </ul>
-        </nav>
-    </header>
+    <div class="container">
+        <header>
+            <h1>Mis Turnos</h1>
+            <nav>
+                <button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
+            </nav>
+        </header>
 
-    <main>
-        <section class="turnos_section">
-            <header>
-                <h1>Bienvenido a la sección de Clientes</h1>
-                <p>Aquí puedes ver tus turnos y detalles de tu cuenta.</p>
-            </header>
-            <table id="tabla-reservas">
-                <thead>
-                    <tr>
-                        <th>Turno</th>
-                        <th>Empleado</th>
-                        <th>Servicio</th>
-                        <th>Fecha</th>
-                        <th>HoraInicio</th>
-                        <th>HoraFin</th>
-                        <th>Estado</th>
-                        <th>FechaModificacion</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="cuerpo-tabla-reservas">
-                    <!-- Los turnos se cargarán dinámicamente aquí -->
-                </tbody>
-            </table>
-            <button class="btn"><a href="registrar_turno.html">Agendar nuevo turno</a></button>
-        </section>
-    </main>
+        <main>
+            <section class="turns-section">
+                <div class="turns-header">
+                    <h2>Turnos Programados</h2>
+                    <button class="btn-primary" onclick="openNewTurnModal()">Nuevo Turno</button>
+                </div>
 
-    <script src="js/navigation.js"></script>
-    <script src="js/client.js"></script>
+                <div class="turns-table-container">
+                    <table class="turns-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Servicio</th>
+                                <th>Empleado</th>
+                                <th>Fecha</th>
+                                <th>Hora Inicio</th>
+                                <th>Hora Fin</th>
+                                <th>Estado</th>
+                                <th>Última Modificación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="turnsTableBody">
+                            <!-- Los turnos se cargarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal para nuevo turno -->
+    <div id="newTurnModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeNewTurnModal()">&times;</span>
+            <h2>Nuevo Turno</h2>
+            <form id="newTurnForm">
+                <div class="form-group">
+                    <label for="service">Servicio:</label>
+                    <select id="service" required>
+                        <!-- Se cargará dinámicamente -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="employee">Empleado:</label>
+                    <select id="employee" required>
+                        <!-- Se cargará dinámicamente -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="date">Fecha:</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="time">Hora:</label>
+                    <input type="time" id="time" required>
+                </div>
+                <button type="submit" class="btn-primary">Crear Turno</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para cancelar turno -->
+    <div id="cancelTurnModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCancelModal()">&times;</span>
+            <h2>Cancelar Turno</h2>
+            <p>¿Está seguro que desea cancelar este turno?</p>
+            <form id="cancelTurnForm">
+                <div class="form-group">
+                    <label for="cancelReason">Motivo de cancelación:</label>
+                    <textarea id="cancelReason" required></textarea>
+                </div>
+                <button type="submit" class="btn-danger">Confirmar Cancelación</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/turnos_clientes.js"></script>
 </body>
 </html>

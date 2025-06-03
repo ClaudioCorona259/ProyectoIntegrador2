@@ -9,7 +9,7 @@ function checkAdminAuth() {
 // Cargar la lista de empleados
 async function loadEmployees() {
     try {
-        const response = await fetch('http://localhost:3000/api/employees', {
+        const response = await fetch('http://localhost:3000/api/Empleados', {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -30,13 +30,13 @@ function displayEmployees(employees) {
     employees.forEach(employee => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${employee.id}</td>
-            <td>${employee.name}</td>
-            <td>${employee.email}</td>
-            <td>${employee.role}</td>
+            <td>${employee.EmpleadoID}</td>
+            <td>${employee.Nombre} ${employee.Apellido}</td>
+            <td>${employee.Telefono || '-'}</td>
+            <td>${employee.Estado}</td>
             <td class="action-buttons">
-                <button class="btn-edit" onclick="editEmployee(${employee.id})">Editar</button>
-                <button class="btn-delete" onclick="deleteEmployee(${employee.id})">Eliminar</button>
+                <button class="btn-edit" onclick="editEmployee(${employee.EmpleadoID})">Editar</button>
+                <button class="btn-delete" onclick="deleteEmployee(${employee.EmpleadoID})">Eliminar</button>
             </td>
         `;
         tbody.appendChild(tr);
@@ -48,14 +48,16 @@ async function handleEmployeeForm(event) {
     event.preventDefault();
     
     const employeeData = {
-        name: document.getElementById('employeeName').value,
-        email: document.getElementById('employeeEmail').value,
-        password: document.getElementById('employeePassword').value,
-        role: document.getElementById('employeeRole').value
+        Nombre: document.getElementById('employeeName').value,
+        Apellido: document.getElementById('employeeSurname').value,
+        Telefono: document.getElementById('employeePhone').value,
+        HorarioInicio: document.getElementById('employeeStartTime').value,
+        HorarioFin: document.getElementById('employeeEndTime').value,
+        Estado: 'activo'
     };
 
     try {
-        const response = await fetch('http://localhost:3000/api/employees', {
+        const response = await fetch('http://localhost:3000/api/Empleados', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -84,7 +86,7 @@ async function deleteEmployee(id) {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/api/employees/${id}`, {
+        const response = await fetch(`http://localhost:3000/api/Empleados/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -106,7 +108,7 @@ async function deleteEmployee(id) {
 // Editar empleado
 async function editEmployee(id) {
     try {
-        const response = await fetch(`http://localhost:3000/api/employees/${id}`, {
+        const response = await fetch(`http://localhost:3000/api/Empleados/${id}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -114,9 +116,11 @@ async function editEmployee(id) {
         const employee = await response.json();
         
         document.getElementById('modalTitle').textContent = 'Editar Empleado';
-        document.getElementById('employeeName').value = employee.name;
-        document.getElementById('employeeEmail').value = employee.email;
-        document.getElementById('employeeRole').value = employee.role;
+        document.getElementById('employeeName').value = employee.Nombre;
+        document.getElementById('employeeSurname').value = employee.Apellido;
+        document.getElementById('employeePhone').value = employee.Telefono;
+        document.getElementById('employeeStartTime').value = employee.HorarioInicio;
+        document.getElementById('employeeEndTime').value = employee.HorarioFin;
         
         openModal();
     } catch (error) {

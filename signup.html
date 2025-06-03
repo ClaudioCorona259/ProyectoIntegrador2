@@ -21,37 +21,42 @@
         </header>
         <section class="section_form">
             <h2>Registrarse</h2>
-            <form action="/login" method="POST">
-                <label for="name">
-                    Nombre
-                    <input type="text" id="name" name="name" required placeholder="Ingrese su Nombre"> 
+            <form id="signupForm">
+                <label for="usuario">
+                    Usuario
+                    <input type="text" id="usuario" name="usuario" required placeholder="Ingrese su Usuario"> 
                 </label>
-                <label for="surname">
+                <label for="nombre">
+                    Nombre
+                    <input type="text" id="nombre" name="nombre" required placeholder="Ingrese su Nombre"> 
+                </label>
+                <label for="apellido">
                     Apellido
-                    <input type="text" id="surname" name="surname" required placeholder="Ingrese su Apellido">
+                    <input type="text" id="apellido" name="apellido" required placeholder="Ingrese su Apellido">
                 </label>
                 <label for="email">
                     Email
                     <input type="email" id="email" name="email" required placeholder="Ingrese su Email">
                 </label>
                 <label for="password">
-                    Constraseña
+                    Contraseña
                     <input type="password" id="password" name="password" required placeholder="Ingrese su Contraseña">
                 </label>
                 <label for="password_conf">
                     Reingrese Contraseña
                     <input type="password" id="password_conf" name="password_conf" required placeholder="Reingrese su Contraseña">
                 </label>
-                <label for="tel">
+                <label for="telefono">
                     Teléfono
-                    <input type="tel" id="tel" name="tel" required placeholder="Ingrese su Teléfono">
+                    <input type="tel" id="telefono" name="telefono" required placeholder="Ingrese su Teléfono">
                 </label>
-                <button class="btn" type="submit">Ingresar</button>
+                <button class="btn" type="submit">Registrarse</button>
             </form>
             <div class="form_footer">
                 <p>¿Ya tienes una cuenta? <a href="login.html">Iniciar Sesión</a></p>
             </div>
         </section>
     </main>
+    <script src="js/signup.js"></script>
 </body>
 </html>
