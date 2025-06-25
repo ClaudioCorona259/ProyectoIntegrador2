@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar Turnos - Administración</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body>
+    <main class="wrapper">
+        <header class="header">
+            <nav>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="admin-panel.html">Panel</a></li>
+                    <li><a href="#turnos">Turnos</a></li>
+                </ul>
+                <ul class="header_list">
+                    <li id="logoutBtn" class="nav_btn">
+                        <a href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="admin-container">
+            <div class="admin-header">
+                <h1>Gestión de Turnos</h1>
+                <nav class="admin-nav">
+                    <a href="admin-panel.html" class="btn">
+                        Volver al Panel
+                    </a>
+                </nav>
+            </div>
+
+            <main class="admin-main">
+                <div class="admin-actions">
+                    <button onclick="mostrarFormularioTurno()" class="btn">
+                        Agregar Nuevo Turno
+                    </button>
+                    <div class="search-box">
+                        <input type="text" id="searchTurno" placeholder="Buscar turnos..." onkeyup="buscarTurnos()">
+                    </div>
+                    <div class="filter-box">
+                        <select id="filterEstado" onchange="filtrarPorEstado()">
+                            <option value="">Todos los estados</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Confirmado">Confirmado</option>
+                            <option value="Cancelado">Cancelado</option>
+                            <option value="Completado">Completado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Formulario para agregar/editar turno -->
+                <div id="formularioTurno" class="formulario-modal" style="display: none;">
+                    <div class="formulario-contenido">
+                        <h3 id="formularioTitulo">Agregar Nuevo Turno</h3>
+                        <form id="turnoForm">
+                            <div class="form-group">
+                                <label for="clienteId">Cliente:</label>
+                                <select id="clienteId" name="clienteId" required>
+                                    <option value="">Seleccionar cliente</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="empleadoId">Empleado:</label>
+                                <select id="empleadoId" name="empleadoId" required>
+                                    <option value="">Seleccionar empleado</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="servicioId">Servicio:</label>
+                                <select id="servicioId" name="servicioId" required>
+                                    <option value="">Seleccionar servicio</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="fecha">Fecha:</label>
+                                <input type="date" id="fecha" name="fecha" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="hora">Hora:</label>
+                                <input type="time" id="hora" name="hora" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="estado">Estado:</label>
+                                <select id="estado" name="estado" required>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="Confirmado">Confirmado</option>
+                                    <option value="Cancelado">Cancelado</option>
+                                    <option value="Completado">Completado</option>
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn">Guardar</button>
+                                <button type="button" onclick="cerrarFormulario('formularioTurno')" class="btn">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tabla de turnos -->
+                <div class="table-container">
+                    <table id="tablaTurnos" class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Empleado</th>
+                                <th>Servicio</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="turnosBody">
+                            <!-- Los datos se cargarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <div class="pagination">
+                    <button onclick="cambiarPagina(-1)" class="btn">Anterior</button>
+                    <span id="paginaInfo">Página 1</span>
+                    <button onclick="cambiarPagina(1)" class="btn">Siguiente</button>
+                </div>
+            </main>
+        </div>
+    </main>
+
+    <!-- Toast para notificaciones -->
+    <div id="toast" class="toast"></div>
+
+    <script src="js/api-config.js"></script>
+    <script src="js/auth-service.js"></script>
+    <script src="js/gestion.js"></script>
+    <script>
+        let turnos = [];
+        let clientes = [];
+        let empleados = [];
+        let servicios = [];
+        let paginaActual = 1;
+        let turnosPorPagina = 10;
+        let modoEdicion = false;
+        let turnoEditando = null;
+        let cambiarPaginaFunc = null;
+
+        // Verificar autenticación al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarPaginaGestion();
+            cargarDatos();
+        });
+
+        async function cargarDatos() {
+            try {
+                await Promise.all([
+                    cargarTurnos(),
+                    cargarClientes(),
+                    cargarEmpleados(),
+                    cargarServicios()
+                ]);
+            } catch (error) {
+                manejarErrorAPI(error, 'Error al cargar datos');
+            }
+        }
+
+        async function cargarTurnos() {
+            try {
+                const result = await apiService.getTurnos();
+                if (result.success && result.data) {
+                    turnos = result.data;
+                    mostrarTurnos();
+                    configurarPaginacion();
+                } else {
+                    mostrarToast('Error al cargar turnos: ' + (result.message || 'Error desconocido'), 'error');
+                }
+            } catch (error) {
+                manejarErrorAPI(error, 'Error al cargar turnos');
+            }
+        }
+
+        async function cargarClientes() {
+            try {
+                const result = await apiService.getClientes();
+                if (result.success && result.data) {
+                    clientes = result.data;
+                    llenarSelectClientes();
+                }
+            } catch (error) {
+                console.error('Error al cargar clientes:', error);
+            }
+        }
+
+        async function cargarEmpleados() {
+            try {
+                const result = await apiService.getEmpleados();
+                if (result.success && result.data) {
+                    empleados = result.data;
+                    llenarSelectEmpleados();
+                }
+            } catch (error) {
+                console.error('Error al cargar empleados:', error);
+            }
+        }
+
+        async function cargarServicios() {
+            try {
+                const result = await apiService.getServicios();
+                if (result.success && result.data) {
+                    servicios = result.data;
+                    llenarSelectServicios();
+                }
+            } catch (error) {
+                console.error('Error al cargar servicios:', error);
+            }
+        }
+
+        function llenarSelectClientes() {
+            const select = document.getElementById('clienteId');
+            if (!select) return;
+            
+            select.innerHTML = '<option value="">Seleccionar cliente</option>';
+            clientes.forEach(cliente => {
+                const option = document.createElement('option');
+                option.value = cliente.ClienteID;
+                option.textContent = `${cliente.Apellido}, ${cliente.Nombre}`;
+                select.appendChild(option);
+            });
+        }
+
+        function llenarSelectEmpleados() {
+            const select = document.getElementById('empleadoId');
+            if (!select) return;
+            
+            select.innerHTML = '<option value="">Seleccionar empleado</option>';
+            empleados.forEach(empleado => {
+                const option = document.createElement('option');
+                option.value = empleado.EmpleadoID;
+                option.textContent = `${empleado.Apellido}, ${empleado.Nombre}`;
+                select.appendChild(option);
+            });
+        }
+
+        function llenarSelectServicios() {
+            const select = document.getElementById('servicioId');
+            if (!select) return;
+            
+            select.innerHTML = '<option value="">Seleccionar servicio</option>';
+            servicios.forEach(servicio => {
+                const option = document.createElement('option');
+                option.value = servicio.ServicioID;
+                option.textContent = servicio.Nombre;
+                select.appendChild(option);
+            });
+        }
+
+        function mostrarTurnos() {
+            const tbody = document.getElementById('turnosBody');
+            const inicio = (paginaActual - 1) * turnosPorPagina;
+            const fin = inicio + turnosPorPagina;
+            const turnosPagina = turnos.slice(inicio, fin);
+
+            tbody.innerHTML = '';
+
+            turnosPagina.forEach(turno => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${turno.TurnoID}</td>
+                    <td>${obtenerNombreCliente(turno.ClienteID)}</td>
+                    <td>${obtenerNombreEmpleado(turno.EmpleadoID)}</td>
+                    <td>${obtenerNombreServicio(turno.ServicioID)}</td>
+                    <td>${formatearFecha(turno.Fecha)}</td>
+                    <td>${turno.Hora || ''}</td>
+                    <td><span class="estado-${turno.Estado?.toLowerCase()}">${formatearEstado(turno.Estado)}</span></td>
+                    <td>
+                        <button onclick="editarTurno(${turno.TurnoID})" class="btn-small btn-secondary">
+                            Editar
+                        </button>
+                        <button onclick="eliminarTurno(${turno.TurnoID})" class="btn-small btn-danger">
+                            Eliminar
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            actualizarPaginacion();
+        }
+
+        function configurarPaginacion() {
+            cambiarPaginaFunc = configurarPaginacion(turnos, turnosPorPagina, 'turnosBody', generarFilaTurno);
+        }
+
+        function generarFilaTurno(turno) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${turno.TurnoID}</td>
+                <td>${obtenerNombreCliente(turno.ClienteID)}</td>
+                <td>${obtenerNombreEmpleado(turno.EmpleadoID)}</td>
+                <td>${obtenerNombreServicio(turno.ServicioID)}</td>
+                <td>${formatearFecha(turno.Fecha)}</td>
+                <td>${turno.Hora || ''}</td>
+                <td><span class="estado-${turno.Estado?.toLowerCase()}">${formatearEstado(turno.Estado)}</span></td>
+                <td>
+                    <button onclick="editarTurno(${turno.TurnoID})" class="btn-small btn-secondary">
+                        Editar
+                    </button>
+                    <button onclick="eliminarTurno(${turno.TurnoID})" class="btn-small btn-danger">
+                        Eliminar
+                    </button>
+                </td>
+            `;
+            return row;
+        }
+
+        function obtenerNombreCliente(clienteId) {
+            const cliente = clientes.find(c => c.ClienteID === clienteId);
+            return cliente ? `${cliente.Apellido}, ${cliente.Nombre}` : 'N/A';
+        }
+
+        function obtenerNombreEmpleado(empleadoId) {
+            const empleado = empleados.find(e => e.EmpleadoID === empleadoId);
+            return empleado ? `${empleado.Apellido}, ${empleado.Nombre}` : 'N/A';
+        }
+
+        function obtenerNombreServicio(servicioId) {
+            const servicio = servicios.find(s => s.ServicioID === servicioId);
+            return servicio ? servicio.Nombre : 'N/A';
+        }
+
+        function actualizarPaginacion() {
+            const totalPaginas = Math.ceil(turnos.length / turnosPorPagina);
+            document.getElementById('paginaInfo').textContent = `Página ${paginaActual} de ${totalPaginas}`;
+        }
+
+        function cambiarPagina(direccion) {
+            if (cambiarPaginaFunc) {
+                cambiarPaginaFunc(direccion);
+            }
+        }
+
+        function buscarTurnos() {
+            const termino = document.getElementById('searchTurno').value.toLowerCase();
+            const turnosFiltrados = turnos.filter(turno => {
+                const nombreCliente = obtenerNombreCliente(turno.ClienteID).toLowerCase();
+                const nombreEmpleado = obtenerNombreEmpleado(turno.EmpleadoID).toLowerCase();
+                const nombreServicio = obtenerNombreServicio(turno.ServicioID).toLowerCase();
+                const estado = (turno.Estado || '').toLowerCase();
+                
+                return nombreCliente.includes(termino) ||
+                       nombreEmpleado.includes(termino) ||
+                       nombreServicio.includes(termino) ||
+                       estado.includes(termino);
+            });
+
+            actualizarTabla('turnosBody', turnosFiltrados, generarFilaTurno);
+        }
+
+        function filtrarPorEstado() {
+            const estadoFiltro = document.getElementById('filterEstado').value;
+            let turnosFiltrados = turnos;
+            
+            if (estadoFiltro) {
+                turnosFiltrados = turnos.filter(turno => turno.Estado === estadoFiltro);
+            }
+
+            actualizarTabla('turnosBody', turnosFiltrados, generarFilaTurno);
+        }
+
+        function mostrarFormularioTurno() {
+            modoEdicion = false;
+            turnoEditando = null;
+            document.getElementById('formularioTitulo').textContent = 'Agregar Nuevo Turno';
+            limpiarFormulario('turnoForm');
+            
+            // Establecer fecha actual por defecto
+            const fechaInput = document.getElementById('fecha');
+            if (fechaInput) {
+                const hoy = new Date().toISOString().split('T')[0];
+                fechaInput.value = hoy;
+            }
+            
+            mostrarFormulario('formularioTurno');
+        }
+
+        function editarTurno(turnoId) {
+            const turno = turnos.find(t => t.TurnoID === turnoId);
+            if (turno) {
+                modoEdicion = true;
+                turnoEditando = turno;
+                document.getElementById('formularioTitulo').textContent = 'Editar Turno';
+                
+                // Separar fecha y hora
+                const fechaTurno = new Date(turno.Fecha);
+                const fecha = fechaTurno.toISOString().split('T')[0];
+                const hora = turno.Hora || '';
+                
+                llenarFormulario('turnoForm', {
+                    clienteId: turno.ClienteID || '',
+                    empleadoId: turno.EmpleadoID || '',
+                    servicioId: turno.ServicioID || '',
+                    fecha: fecha,
+                    hora: hora,
+                    estado: turno.Estado || 'Pendiente'
+                });
+                mostrarFormulario('formularioTurno');
+            }
+        }
+
+        async function eliminarTurno(turnoId) {
+            if (!confirmarEliminacion('¿Estás seguro de que quieres eliminar este turno?')) {
+                return;
+            }
+
+            try {
+                const result = await apiService.deleteTurno(turnoId);
+                if (result.success) {
+                    manejarExitoAPI('Turno eliminado correctamente', cargarTurnos);
+                } else {
+                    manejarErrorAPI(new Error(result.message), 'Error al eliminar turno');
+                }
+            } catch (error) {
+                manejarErrorAPI(error, 'Error al eliminar turno');
+            }
+        }
+
+        // Manejar envío del formulario
+        document.getElementById('turnoForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            if (!validarFormulario(formData)) {
+                return;
+            }
+
+            const turnoData = {
+                ClienteID: parseInt(formData.get('clienteId')),
+                EmpleadoID: parseInt(formData.get('empleadoId')),
+                ServicioID: parseInt(formData.get('servicioId')),
+                Fecha: formData.get('fecha'),
+                Hora: formData.get('hora'),
+                Estado: formData.get('estado')
+            };
+
+            try {
+                let result;
+                if (modoEdicion) {
+                    result = await apiService.updateTurno(turnoEditando.TurnoID, turnoData);
+                } else {
+                    result = await apiService.createTurno(turnoData);
+                }
+
+                if (result.success) {
+                    const mensaje = modoEdicion ? 'Turno actualizado correctamente' : 'Turno creado correctamente';
+                    manejarExitoAPI(mensaje, () => {
+                        cerrarFormulario('formularioTurno');
+                        cargarTurnos();
+                    });
+                } else {
+                    manejarErrorAPI(new Error(result.message), 'Error al procesar turno');
+                }
+            } catch (error) {
+                manejarErrorAPI(error, 'Error de conexión');
+            }
+        });
+
+        function cerrarSesion() {
+            authService.logout();
+        }
+    </script>
+</body>
+</html> 

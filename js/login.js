@@ -46,6 +46,20 @@ function validateForm(email, password, userType) {
     return isValid;
 }
 
+// Función para mostrar loading
+function showLoading() {
+    const submitBtn = document.querySelector('#loginForm button[type="submit"]');
+    submitBtn.textContent = 'Iniciando sesión...';
+    submitBtn.disabled = true;
+}
+
+// Función para ocultar loading
+function hideLoading() {
+    const submitBtn = document.querySelector('#loginForm button[type="submit"]');
+    submitBtn.textContent = 'Ingresar';
+    submitBtn.disabled = false;
+}
+
 // Función para manejar el login
 async function handleLogin(event) {
     event.preventDefault();
@@ -58,42 +72,42 @@ async function handleLogin(event) {
         return;
     }
 
+    showLoading();
+
     try {
-        const response = await fetch('http://localhost:3000/api/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password, userType })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            // Guardar el token y la información del usuario
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-
+        const result = await authService.login(email, password, userType);
+        
+        if (result.success) {
+            // Guardar información del usuario
+            authService.setUser(result.user);
+            
+            // Mostrar mensaje de éxito
+            showApiSuccess('Inicio de sesión exitoso');
+            
             // Redirigir según el rol
-            switch (data.user.role) {
-                case 'admin':
-                    window.location.href = 'admin-panel.html';
-                    break;
-                case 'empleado':
-                    window.location.href = 'empleado-panel.html';
-                    break;
-                case 'cliente':
-                    window.location.href = 'index.html';
-                    break;
-                default:
-                    window.location.href = 'index.html';
-            }
+            setTimeout(() => {
+                switch (userType) {
+                    case 'admin':
+                        window.location.href = 'admin-panel.html';
+                        break;
+                    case 'empleado':
+                        window.location.href = 'empleado-panel.html';
+                        break;
+                    case 'cliente':
+                        window.location.href = 'turnos_clientes.html';
+                        break;
+                    default:
+                        window.location.href = 'index.html';
+                }
+            }, 1000);
         } else {
-            showError('email', data.message || 'Error al iniciar sesión');
+            showError('email', result.message || 'Credenciales inválidas');
         }
     } catch (error) {
         console.error('Error:', error);
         showError('email', 'Error al conectar con el servidor');
+    } finally {
+        hideLoading();
     }
 }
 
@@ -102,22 +116,27 @@ async function handlePasswordRecovery(event) {
     event.preventDefault();
     const email = document.getElementById('recoveryEmail').value;
 
+    if (!email) {
+        alert('Por favor ingrese su email');
+        return;
+    }
+
     try {
-        const response = await fetch('http://localhost:3000/api/auth/recover-password', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            alert('Se ha enviado un correo con las instrucciones para recuperar su contraseña');
-            closeModal();
+        // En un caso real, esto debería enviar un email
+        // Por ahora, solo verificamos que el usuario existe
+        const response = await fetch('http://localhost:62239/api/clientes');
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+            const cliente = result.data.find(c => c.Email === email);
+            if (cliente) {
+                alert('Se ha enviado un correo con las instrucciones para recuperar su contraseña');
+                closeModal();
+            } else {
+                alert('No se encontró un usuario con ese email');
+            }
         } else {
-            alert(data.message || 'Error al procesar la solicitud');
+            alert('Error en la respuesta del servidor');
         }
     } catch (error) {
         console.error('Error:', error);
@@ -125,20 +144,72 @@ async function handlePasswordRecovery(event) {
     }
 }
 
+// Función para cerrar modal
+function closeModal() {
+    const modal = document.getElementById('recoveryModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Función para abrir modal de recuperación
+function openRecoveryModal() {
+    const modal = document.getElementById('recoveryModal');
+    if (modal) {
+        modal.style.display = 'block';
+    }
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
     // Login form
-    document.getElementById('loginForm').addEventListener('submit', handleLogin);
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
 
     // Password recovery
-    document.getElementById('forgotPassword').addEventListener('click', (e) => {
-        e.preventDefault();
-        openModal();
-    });
+    const forgotPasswordLink = document.getElementById('forgotPassword');
+    if (forgotPasswordLink) {
+        forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            openRecoveryModal();
+        });
+    }
+
+    // Recovery form
+    const recoveryForm = document.getElementById('recoveryForm');
+    if (recoveryForm) {
+        recoveryForm.addEventListener('submit', handlePasswordRecovery);
+    }
 
     // Close modal
-    document.querySelector('.close')?.addEventListener('click', closeModal);
+    const closeModalBtn = document.querySelector('.close');
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeModal);
+    }
 
-    // Password recovery form
-    document.getElementById('recoveryForm')?.addEventListener('submit', handlePasswordRecovery);
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+        const modal = document.getElementById('recoveryModal');
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Verificar si ya está autenticado
+    if (authService.isAuthenticated()) {
+        const user = authService.getCurrentUser();
+        switch (user.role) {
+            case 'admin':
+                window.location.href = 'admin-panel.html';
+                break;
+            case 'empleado':
+                window.location.href = 'empleado-panel.html';
+                break;
+            case 'cliente':
+                window.location.href = 'turnos_clientes.html';
+                break;
+        }
+    }
 }); 

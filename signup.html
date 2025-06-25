@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,37 +21,42 @@
         </header>
         <section class="section_form">
             <h2>Registrarse</h2>
-            <form action="/login" method="POST">
-                <label for="name">
+            <form id="signupForm">
+                <label for="nombre">
                     Nombre
-                    <input type="text" id="name" name="name" required placeholder="Ingrese su Nombre"> 
+                    <input type="text" id="nombre" name="nombre" required placeholder="Ingrese su Nombre"> 
                 </label>
-                <label for="surname">
+                <label for="apellido">
                     Apellido
-                    <input type="text" id="surname" name="surname" required placeholder="Ingrese su Apellido">
+                    <input type="text" id="apellido" name="apellido" required placeholder="Ingrese su Apellido">
                 </label>
                 <label for="email">
                     Email
                     <input type="email" id="email" name="email" required placeholder="Ingrese su Email">
                 </label>
+                <label for="telefono">
+                    Teléfono
+                    <input type="tel" id="telefono" name="telefono" required placeholder="Ingrese su Teléfono">
+                </label>
                 <label for="password">
-                    Constraseña
+                    Contraseña
                     <input type="password" id="password" name="password" required placeholder="Ingrese su Contraseña">
                 </label>
-                <label for="password_conf">
-                    Reingrese Contraseña
-                    <input type="password" id="password_conf" name="password_conf" required placeholder="Reingrese su Contraseña">
+                <label for="confirmPassword">
+                    Confirmar Contraseña
+                    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirme su Contraseña">
                 </label>
-                <label for="tel">
-                    Teléfono
-                    <input type="tel" id="tel" name="tel" required placeholder="Ingrese su Teléfono">
-                </label>
-                <button class="btn" type="submit">Ingresar</button>
+                <button class="btn" type="submit">Registrarse</button>
             </form>
             <div class="form_footer">
                 <p>¿Ya tienes una cuenta? <a href="login.html">Iniciar Sesión</a></p>
             </div>
         </section>
     </main>
+
+    <!-- Scripts -->
+    <script src="js/api-config.js"></script>
+    <script src="js/auth-service.js"></script>
+    <script src="js/signup.js"></script>
 </body>
 </html>

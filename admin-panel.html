@@ -3,82 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración</title>
+    <title>Panel de Administración - Barbería</title>
     <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="styles/admin.css">
 </head>
 <body>
-    <header class="header">
-        <nav>
-            <ul>
-                <!-- La navegación se cargará dinámicamente -->
-            </ul>
-            <ul class="header_list">
-                <!-- El menú de usuario se cargará dinámicamente -->
-            </ul>
-        </nav>
-    </header>
+    <main class="wrapper">
+        <header class="header">
+            <nav>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                </ul>
+                <ul class="header_list">
+                    <li id="logoutBtn" class="nav_btn">
+                        <a href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
 
-    <main class="admin-container">
-        <h1>Panel de Administración</h1>
-        
-        <section class="admin-section">
-            <h2>Gestión de Empleados</h2>
-            
-            <div class="admin-actions">
-                <button class="btn" id="addEmployeeBtn">Agregar Nuevo Empleado</button>
+        <div class="admin-container">
+            <div class="admin-header">
+                <h1>Panel de Administración</h1>
+                <nav class="admin-nav">
+                    <button id="refreshBtn" class="btn">
+                        Actualizar
+                    </button>
+                </nav>
             </div>
 
-            <div class="employees-list">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Email</th>
-                            <th>Rol</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="employeesTableBody">
-                        <!-- Los empleados se cargarán dinámicamente aquí -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
+            <main class="admin-main">
+                <!-- Dashboard principal -->
+                <div class="dashboard-grid">
+                    <!-- Acciones rápidas -->
+                    <section class="dashboard-section">
+                        <h2>Acciones Rápidas</h2>
+                        <div class="quick-actions">
+                            <a href="gestionar-clientes.html" class="action-card">
+                                <h3>Gestionar Clientes</h3>
+                                <p>Ver, agregar y editar clientes</p>
+                            </a>
+                            <a href="gestionar-empleados.html" class="action-card">
+                                <h3>Gestionar Empleados</h3>
+                                <p>Administrar personal y horarios</p>
+                            </a>
+                            <a href="gestionar-servicios.html" class="action-card">
+                                <h3>Gestionar Servicios</h3>
+                                <p>Configurar servicios y precios</p>
+                            </a>
+                            <a href="gestionar-turnos.html" class="action-card">
+                                <h3>Gestionar Turnos</h3>
+                                <p>Ver y administrar turnos</p>
+                            </a>
+                        </div>
+                    </section>
 
-        <!-- Modal para agregar/editar empleado -->
-        <div id="employeeModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2 id="modalTitle">Agregar Nuevo Empleado</h2>
-                <form id="employeeForm">
-                    <div class="form-group">
-                        <label for="employeeName">Nombre:</label>
-                        <input type="text" id="employeeName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="employeeEmail">Email:</label>
-                        <input type="email" id="employeeEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="employeePassword">Contraseña:</label>
-                        <input type="password" id="employeePassword" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="employeeRole">Rol:</label>
-                        <select id="employeeRole" required>
-                            <option value="empleado">Empleado</option>
-                            <option value="admin">Administrador</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn">Guardar</button>
-                </form>
-            </div>
+                    <!-- Turnos recientes -->
+                    <section class="dashboard-section">
+                        <h2>Turnos Recientes</h2>
+                        <div id="recentTurnos" class="recent-content">
+                            <!-- Los turnos recientes se cargarán dinámicamente -->
+                        </div>
+                    </section>
+
+                    <!-- Clientes recientes -->
+                    <section class="dashboard-section">
+                        <h2>Clientes Recientes</h2>
+                        <div id="recentClientes" class="recent-content">
+                            <!-- Los clientes recientes se cargarán dinámicamente -->
+                        </div>
+                    </section>
+                </div>
+            </main>
         </div>
     </main>
 
-    <script src="js/navigation.js"></script>
+    <!-- Toast para notificaciones -->
+    <div id="toast" class="toast"></div>
+
+    <script src="js/api-config.js"></script>
+    <script src="js/auth-service.js"></script>
     <script src="js/admin.js"></script>
 </body>
 </html> 

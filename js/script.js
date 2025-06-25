@@ -8,117 +8,135 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnConfirmarCancelar = document.getElementById('btnConfirmarCancelar');
     const reservaIdCancelarInput = document.getElementById('reservaIdCancelar');
 
-    // Reemplaza con la URL de tu API de reservas
-    const API_RESERVAS_URL = 'TU_API_DE_RESERVAS';
+    // URL de la API de turnos
+    const API_TURNOS_URL = 'http://localhost:62239/api/turnos';
 
     // Función para cargar las reservas del usuario
-    function cargarReservas() {
-        fetch(`${API_RESERVAS_URL}/usuario/123`) // Reemplaza '123' con el ID del usuario actual
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(reservas => {
-                if (reservas.length > 0) {
-                    mensajeSinReservas.style.display = 'none';
-                    tablaReservas.style.display = 'table';
-                    cuerpoTablaReservas.innerHTML = '';
-                    reservas.forEach(reserva => {
-                        const row = cuerpoTablaReservas.insertRow();
-                        row.insertCell().textContent = reserva.id;
-                        row.insertCell().textContent = reserva.nombre;
-                        row.insertCell().textContent = reserva.apellido;
-                        row.insertCell().textContent = reserva.servicio;
-                        row.insertCell().textContent = reserva.fecha;
-                        row.insertCell().textContent = reserva.hora;
-                        const accionesCell = row.insertCell();
-                        const btnModificar = document.createElement('button');
-                        btnModificar.textContent = 'Modificar';
-                        btnModificar.classList.add('button', 'secondary-small');
-                        btnModificar.addEventListener('click', () => mostrarFormularioModificar(reserva.id));
-                        accionesCell.appendChild(btnModificar);
-                        const btnEliminar = document.createElement('button');
-                        btnEliminar.textContent = 'Eliminar';
-                        btnEliminar.classList.add('button', 'danger-small');
-                        btnEliminar.addEventListener('click', () => mostrarCartelCancelar(reserva.id));
-                        accionesCell.appendChild(btnEliminar);
-                    });
-                } else {
-                    tablaReservas.style.display = 'none';
-                    mensajeSinReservas.style.display = 'block';
-                }
-            })
-            .catch(error => {
-                console.error('Error al cargar las reservas:', error);
-                alert('No se pudieron cargar tus reservas. Por favor, intenta nuevamente más tarde.');
-            });
+    async function cargarReservas() {
+        try {
+            // Obtener usuario actual del localStorage
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user) {
+                console.error('Usuario no autenticado');
+                return;
+            }
+
+            const response = await fetch(`${API_TURNOS_URL}/cliente/${user.id}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            const turnos = result.data || [];
+
+            if (turnos.length > 0) {
+                mensajeSinReservas.style.display = 'none';
+                tablaReservas.style.display = 'table';
+                cuerpoTablaReservas.innerHTML = '';
+                
+                turnos.forEach(turno => {
+                    const row = cuerpoTablaReservas.insertRow();
+                    row.insertCell().textContent = turno.Id;
+                    row.insertCell().textContent = turno.Cliente?.Nombre || 'N/A';
+                    row.insertCell().textContent = turno.Cliente?.Apellido || 'N/A';
+                    row.insertCell().textContent = turno.Servicio?.Nombre || 'N/A';
+                    row.insertCell().textContent = turno.Fecha;
+                    row.insertCell().textContent = turno.HoraInicio;
+                    
+                    const accionesCell = row.insertCell();
+                    
+                    const btnModificar = document.createElement('button');
+                    btnModificar.textContent = 'Modificar';
+                    btnModificar.classList.add('button', 'secondary-small');
+                    btnModificar.addEventListener('click', () => mostrarFormularioModificar(turno.Id));
+                    accionesCell.appendChild(btnModificar);
+                    
+                    const btnEliminar = document.createElement('button');
+                    btnEliminar.textContent = 'Eliminar';
+                    btnEliminar.classList.add('button', 'danger-small');
+                    btnEliminar.addEventListener('click', () => mostrarCartelCancelar(turno.Id));
+                    accionesCell.appendChild(btnEliminar);
+                });
+            } else {
+                tablaReservas.style.display = 'none';
+                mensajeSinReservas.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Error al cargar las reservas:', error);
+            alert('No se pudieron cargar tus reservas. Por favor, intenta nuevamente más tarde.');
+        }
     }
 
     // Función para mostrar el formulario de modificación con los datos de la reserva
-    function mostrarFormularioModificar(reservaId) {
-        fetch(`${API_RESERVAS_URL}/${reservaId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(reserva => {
-                document.getElementById('reservaIdModificar').value = reserva.id;
-                document.getElementById('nombreModificar').value = reserva.nombre;
-                document.getElementById('apellidoModificar').value = reserva.apellido;
-                document.getElementById('servicioModificar').value = reserva.servicio;
-                document.getElementById('fechaModificar').value = reserva.fecha;
-                document.getElementById('horaModificar').value = reserva.hora;
-                formularioGestionReserva.style.display = 'block';
-                document.getElementById('lista-reservas').style.display = 'none';
-            })
-            .catch(error => {
-                console.error('Error al obtener los detalles de la reserva:', error);
-                alert('No se pudieron cargar los detalles de la reserva.');
-            });
+    async function mostrarFormularioModificar(turnoId) {
+        try {
+            const response = await fetch(`${API_TURNOS_URL}/${turnoId}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            const turno = result.data;
+
+            document.getElementById('reservaIdModificar').value = turno.Id;
+            document.getElementById('nombreModificar').value = turno.Cliente?.Nombre || '';
+            document.getElementById('apellidoModificar').value = turno.Cliente?.Apellido || '';
+            document.getElementById('servicioModificar').value = turno.ServicioId || '';
+            document.getElementById('fechaModificar').value = turno.Fecha;
+            document.getElementById('horaModificar').value = turno.HoraInicio;
+            
+            formularioGestionReserva.style.display = 'block';
+            document.getElementById('lista-reservas').style.display = 'none';
+        } catch (error) {
+            console.error('Error al obtener los detalles de la reserva:', error);
+            alert('No se pudieron cargar los detalles de la reserva.');
+        }
     }
 
     // Función para guardar los cambios de la reserva
-    modificarReservaForm.addEventListener('submit', function (event) {
+    modificarReservaForm.addEventListener('submit', async function (event) {
         event.preventDefault();
-        const reservaId = document.getElementById('reservaIdModificar').value;
+        
+        const turnoId = document.getElementById('reservaIdModificar').value;
         const nombre = document.getElementById('nombreModificar').value;
         const apellido = document.getElementById('apellidoModificar').value;
-        const servicio = document.getElementById('servicioModificar').value;
+        const servicioId = document.getElementById('servicioModificar').value;
         const fecha = document.getElementById('fechaModificar').value;
         const hora = document.getElementById('horaModificar').value;
 
-        const datosModificados = { nombre, apellido, servicio, fecha, hora };
+        const datosModificados = {
+            Fecha: fecha,
+            HoraInicio: hora,
+            ServicioId: parseInt(servicioId)
+        };
 
-        fetch(`${API_RESERVAS_URL}/${reservaId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(datosModificados)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                alert('Reserva modificada con éxito.');
-                formularioGestionReserva.style.display = 'none';
-                document.getElementById('lista-reservas').style.display = 'block';
-                cargarReservas(); // Recargar la lista de reservas
-            })
-            .catch(error => {
-                console.error('Error al modificar la reserva:', error);
-                alert('No se pudo modificar la reserva.');
+        try {
+            const response = await fetch(`${API_TURNOS_URL}/${turnoId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datosModificados)
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            alert('Reserva modificada con éxito.');
+            formularioGestionReserva.style.display = 'none';
+            document.getElementById('lista-reservas').style.display = 'block';
+            cargarReservas(); // Recargar la lista de reservas
+        } catch (error) {
+            console.error('Error al modificar la reserva:', error);
+            alert('No se pudo modificar la reserva.');
+        }
     });
 
     // Función para mostrar el cartel de cancelar
-    function mostrarCartelCancelar(reservaId) {
-        reservaIdCancelarInput.value = reservaId;
+    function mostrarCartelCancelar(turnoId) {
+        reservaIdCancelarInput.value = turnoId;
         cartelCancelar.style.display = 'flex';
     }
 
@@ -128,26 +146,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Función para confirmar la cancelación de la reserva
-    btnConfirmarCancelar.addEventListener('click', function () {
-        const reservaId = reservaIdCancelarInput.value;
-        fetch(`${API_RESERVAS_URL}/${reservaId}`, {
-            method: 'DELETE'
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                alert('Reserva cancelada con éxito.');
-                cartelCancelar.style.display = 'none';
-                cargarReservas(); // Recargar la lista de reservas
-            })
-            .catch(error => {
-                console.error('Error al cancelar la reserva:', error);
-                alert('No se pudo cancelar la reserva.');
+    btnConfirmarCancelar.addEventListener('click', async function () {
+        const turnoId = reservaIdCancelarInput.value;
+        
+        try {
+            const response = await fetch(`${API_TURNOS_URL}/${turnoId}`, {
+                method: 'DELETE'
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            alert('Reserva cancelada con éxito.');
+            cartelCancelar.style.display = 'none';
+            cargarReservas(); // Recargar la lista de reservas
+        } catch (error) {
+            console.error('Error al cancelar la reserva:', error);
+            alert('No se pudo cancelar la reserva.');
+        }
     });
 
     // Función para ocultar el formulario de modificar
@@ -156,16 +174,14 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('lista-reservas').style.display = 'block';
     }
 
-    // Cargar las reservas al cargar la página (o cuando el usuario acceda a esta sección)
+    // Cargar las reservas al cargar la página
     cargarReservas();
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    // ... (tu código JavaScript existente) ...
-
     const nuevaReservaForm = document.getElementById('nuevaReservaForm');
 
-    nuevaReservaForm.addEventListener('submit', function (event) {
+    nuevaReservaForm.addEventListener('submit', async function (event) {
         event.preventDefault();
 
         const nombre = document.getElementById('nombreNueva').value;
@@ -174,40 +190,47 @@ document.addEventListener('DOMContentLoaded', function () {
         const fecha = document.getElementById('fechaNueva').value;
         const hora = document.getElementById('horaNueva').value;
 
+        // Obtener usuario actual del localStorage
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) {
+            alert('Usuario no autenticado');
+            return;
+        }
+
         const nuevaReservaData = {
-            nombre: nombre,
-            apellido: apellido,
-            servicio: servicio,
-            fecha: fecha,
-            hora: hora
+            ClienteId: user.id,
+            ServicioId: parseInt(servicio),
+            Fecha: fecha,
+            HoraInicio: hora,
+            EstadoId: 1 // Estado pendiente
         };
 
-        const API_RESERVAS_URL = 'TU_API_DE_RESERVAS'; // Asegúrate de que esta URL sea correcta
-
-        fetch(API_RESERVAS_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(nuevaReservaData)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Nueva reserva creada con éxito:', data);
-                alert('Su reserva ha sido realizada con éxito. Nos pondremos en contacto con usted para confirmarla.');
-                nuevaReservaForm.reset();
-                cargarReservas(); // Si quieres recargar la lista de reservas después de una nueva reserva
-            })
-            .catch(error => {
-                console.error('Error al crear la nueva reserva:', error);
-                alert('Hubo un error al realizar su reserva. Por favor, intente nuevamente más tarde.');
+        try {
+            const response = await fetch('http://localhost:62239/api/turnos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(nuevaReservaData)
             });
-    });
 
-    // ... (el resto de tu código JavaScript para la gestión de reservas) ...
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            alert('Reserva creada con éxito.');
+            
+            // Limpiar formulario
+            nuevaReservaForm.reset();
+            
+            // Recargar la lista de reservas si existe
+            if (typeof cargarReservas === 'function') {
+                cargarReservas();
+            }
+        } catch (error) {
+            console.error('Error al crear la reserva:', error);
+            alert('No se pudo crear la reserva.');
+        }
+    });
 });

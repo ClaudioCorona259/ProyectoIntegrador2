@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar Servicios - Administración</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body>
+    <main class="wrapper">
+        <header class="header">
+            <nav>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="admin-panel.html">Panel</a></li>
+                    <li><a href="#servicios">Servicios</a></li>
+                </ul>
+                <ul class="header_list">
+                    <li id="logoutBtn" class="nav_btn">
+                        <a href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="admin-container">
+            <div class="admin-header">
+                <h1>Gestión de Servicios</h1>
+                <nav class="admin-nav">
+                    <a href="admin-panel.html" class="btn">
+                        Volver al Panel
+                    </a>
+                </nav>
+            </div>
+
+            <main class="admin-main">
+                <div class="admin-actions">
+                    <button onclick="mostrarFormularioServicio()" class="btn">
+                        Agregar Nuevo Servicio
+                    </button>
+                    <div class="search-box">
+                        <input type="text" id="searchServicio" placeholder="Buscar servicios..." onkeyup="buscarServicios()">
+                    </div>
+                </div>
+
+                <!-- Formulario para agregar/editar servicio -->
+                <div id="formularioServicio" class="formulario-modal" style="display: none;">
+                    <div class="formulario-contenido">
+                        <h3 id="formularioTitulo">Agregar Nuevo Servicio</h3>
+                        <form id="servicioForm">
+                            <div class="form-group">
+                                <label for="nombre">Nombre:</label>
+                                <input type="text" id="nombre" name="nombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="descripcion">Descripción:</label>
+                                <textarea id="descripcion" name="descripcion" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="precio">Precio:</label>
+                                <input type="number" id="precio" name="precio" step="0.01" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="duracion">Duración (minutos):</label>
+                                <input type="number" id="duracion" name="duracion" min="1" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn">Guardar</button>
+                                <button type="button" onclick="cerrarFormulario('formularioServicio')" class="btn">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tabla de servicios -->
+                <div class="table-container">
+                    <table id="tablaServicios" class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Precio</th>
+                                <th>Duración</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="serviciosBody">
+                            <!-- Los datos se cargarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <div class="pagination">
+                    <button onclick="cambiarPagina(-1)" class="btn">Anterior</button>
+                    <span id="paginaInfo">Página 1</span>
+                    <button onclick="cambiarPagina(1)" class="btn">Siguiente</button>
+                </div>
+            </main>
+        </div>
+    </main>
+
+    <!-- Toast para notificaciones -->
+    <div id="toast" class="toast"></div>
+
+    <script src="js/api-config.js"></script>
+    <script src="js/auth-service.js"></script>
+    <script src="js/gestion.js"></script>
+    <script>
+        let servicios = [];
+        let paginaActual = 1;
+        let serviciosPorPagina = 10;
+        let modoEdicion = false;
+        let servicioEditando = null;
+        let cambiarPaginaFunc = null;
+
+        // Verificar autenticación al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarPaginaGestion();
+            cargarServicios();
+        });
+
+        async function cargarServicios() {
+            try {
+                const result = await apiService.getServicios();
+                if (result.success && result.data) {
+                    servicios = result.data;
+                    mostrarServicios();
+                    configurarPaginacion();
+                } else {
+                    mostrarToast('Error al cargar servicios: ' + (result.message || 'Error desconocido'), 'error');
+                }
+            } catch (error) {
+                manejarErrorAPI(error, 'Error al cargar servicios');
+            }
+        }
+
+        function mostrarServicios() {
+            const tbody = document.getElementById('serviciosBody');
+            const inicio = (paginaActual - 1) * serviciosPorPagina;
+            const fin = inicio + serviciosPorPagina;
+            const serviciosPagina = servicios.slice(inicio, fin);
+
+            tbody.innerHTML = '';
+
+            serviciosPagina.forEach(servicio => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${servicio.ServicioID}</td>
+                    <td>${servicio.Nombre || ''}</td>
+                    <td>${servicio.Descripcion || ''}</td>
+                    <td>$${servicio.Precio || 0}</td>
+                    <td>${servicio.Duracion || 0} min</td>
+                    <td>
+                        <button onclick="editarServicio(${servicio.ServicioID})" class="btn-small btn-secondary">
+                            Editar
+                        </button>
+                        <button onclick="eliminarServicio(${servicio.ServicioID})" class="btn-small btn-danger">
+                            Eliminar
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            actualizarPaginacion();
+        }
+
+        function configurarPaginacion() {
+            cambiarPaginaFunc = configurarPaginacion(servicios, serviciosPorPagina, 'serviciosBody', generarFilaServicio);
+        }
+
+        function generarFilaServicio(servicio) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${servicio.ServicioID}</td>
+                <td>${servicio.Nombre || ''}</td>
+                <td>${servicio.Descripcion || ''}</td>
+                <td>$${servicio.Precio || 0}</td>
+                <td>${servicio.Duracion || 0} min</td>
+                <td>
+                    <button onclick="editarServicio(${servicio.ServicioID})" class="btn-small btn-secondary">
+                        Editar
+                    </button>
+                    <button onclick="eliminarServicio(${servicio.ServicioID})" class="btn-small btn-danger">
+                        Eliminar
+                    </button>
+                </td>
+            `;
+            return row;
+        }
+
+        function actualizarPaginacion() {
+            const totalPaginas = Math.ceil(servicios.length / serviciosPorPagina);
+            document.getElementById('paginaInfo').textContent = `Página ${paginaActual} de ${totalPaginas}`;
+        }
+
+        function cambiarPagina(direccion) {
+            if (cambiarPaginaFunc) {
+                cambiarPaginaFunc(direccion);
+            }
+        }
+
+        function buscarServicios() {
+            const termino = document.getElementById('searchServicio').value.toLowerCase();
+            const serviciosFiltrados = servicios.filter(servicio => 
+                (servicio.Nombre && servicio.Nombre.toLowerCase().includes(termino)) ||
+                (servicio.Descripcion && servicio.Descripcion.toLowerCase().includes(termino))
+            );
+
+            actualizarTabla('serviciosBody', serviciosFiltrados, generarFilaServicio);
+        }
+
+        function mostrarFormularioServicio() {
+            modoEdicion = false;
+            servicioEditando = null;
+            document.getElementById('formularioTitulo').textContent = 'Agregar Nuevo Servicio';
+            limpiarFormulario('servicioForm');
+            mostrarFormulario('formularioServicio');
+        }
+
+        function editarServicio(servicioId) {
+            const servicio = servicios.find(s => s.ServicioID === servicioId);
+            if (servicio) {
+                modoEdicion = true;
+                servicioEditando = servicio;
+                document.getElementById('formularioTitulo').textContent = 'Editar Servicio';
+                llenarFormulario('servicioForm', {
+                    nombre: servicio.Nombre || '',
+                    descripcion: servicio.Descripcion || '',
+                    precio: servicio.Precio || 0,
+                    duracion: servicio.Duracion || 0
+                });
+                mostrarFormulario('formularioServicio');
+            }
+        }
+
+        async function eliminarServicio(servicioId) {
+            if (!confirmarEliminacion('¿Estás seguro de que quieres eliminar este servicio?')) {
+                return;
+            }
+
+            try {
+                const result = await apiService.deleteServicio(servicioId);
+                if (result.success) {
+                    manejarExitoAPI('Servicio eliminado correctamente', cargarServicios);
+                } else {
+                    manejarErrorAPI(new Error(result.message), 'Error al eliminar servicio');
+                }
+            } catch (error) {
+                manejarErrorAPI(error, 'Error al eliminar servicio');
+            }
+        }
+
+        // Manejar envío del formulario
+        document.getElementById('servicioForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            if (!validarFormulario(formData)) {
+                return;
+            }
+
+            const servicioData = {
+                Nombre: formData.get('nombre'),
+                Descripcion: formData.get('descripcion'),
+                Precio: parseFloat(formData.get('precio')),
+                Duracion: parseInt(formData.get('duracion'))
+            };
+
+            try {
+                let result;
+                if (modoEdicion) {
+                    result = await apiService.updateServicio(servicioEditando.ServicioID, servicioData);
+                } else {
+                    result = await apiService.createServicio(servicioData);
+                }
+
+                if (result.success) {
+                    const mensaje = modoEdicion ? 'Servicio actualizado correctamente' : 'Servicio creado correctamente';
+                    manejarExitoAPI(mensaje, () => {
+                        cerrarFormulario('formularioServicio');
+                        cargarServicios();
+                    });
+                } else {
+                    manejarErrorAPI(new Error(result.message), 'Error al procesar servicio');
+                }
+            } catch (error) {
+                manejarErrorAPI(error, 'Error de conexión');
+            }
+        });
+    </script>
+</body>
+</html> 

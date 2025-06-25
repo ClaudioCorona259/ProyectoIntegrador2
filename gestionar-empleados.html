@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar Empleados - Administración</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body>
+    <main class="wrapper">
+        <header class="header">
+            <nav>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="admin-panel.html">Panel</a></li>
+                    <li><a href="#empleados">Empleados</a></li>
+                </ul>
+                <ul class="header_list">
+                    <li id="logoutBtn" class="nav_btn">
+                        <a href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="admin-container">
+            <div class="admin-header">
+                <h1>Gestión de Empleados</h1>
+                <nav class="admin-nav">
+                    <a href="admin-panel.html" class="btn">
+                        Volver al Panel
+                    </a>
+                </nav>
+            </div>
+
+            <main class="admin-main">
+                <div class="admin-actions">
+                    <button onclick="mostrarFormularioEmpleado()" class="btn">
+                        Agregar Nuevo Empleado
+                    </button>
+                    <div class="search-box">
+                        <input type="text" id="searchEmpleado" placeholder="Buscar empleados..." onkeyup="buscarEmpleados()">
+                    </div>
+                </div>
+
+                <!-- Formulario para agregar/editar empleado -->
+                <div id="formularioEmpleado" class="formulario-modal" style="display: none;">
+                    <div class="formulario-contenido">
+                        <h3 id="formularioTitulo">Agregar Nuevo Empleado</h3>
+                        <form id="empleadoForm">
+                            <div class="form-group">
+                                <label for="apellido">Apellido:</label>
+                                <input type="text" id="apellido" name="apellido" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="nombre">Nombre:</label>
+                                <input type="text" id="nombre" name="nombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="telefono">Teléfono:</label>
+                                <input type="tel" id="telefono" name="telefono" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="especialidad">Especialidad:</label>
+                                <input type="text" id="especialidad" name="especialidad" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn">Guardar</button>
+                                <button type="button" onclick="cerrarFormulario('formularioEmpleado')" class="btn">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tabla de empleados -->
+                <div class="table-container">
+                    <table id="tablaEmpleados" class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Apellido</th>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
+                                <th>Especialidad</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="empleadosBody">
+                            <!-- Los datos se cargarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <div class="pagination">
+                    <button onclick="cambiarPagina(-1)" class="btn">Anterior</button>
+                    <span id="paginaInfo">Página 1</span>
+                    <button onclick="cambiarPagina(1)" class="btn">Siguiente</button>
+                </div>
+            </main>
+        </div>
+    </main>
+
+    <!-- Toast para notificaciones -->
+    <div id="toast" class="toast"></div>
+
+    <script src="js/api-config.js"></script>
+    <script src="js/auth-service.js"></script>
+    <script src="js/gestion.js"></script>
+    <script>
+        let empleados = [];
+        let paginaActual = 1;
+        let empleadosPorPagina = 10;
+        let modoEdicion = false;
+        let empleadoEditando = null;
+        let cambiarPaginaFunc = null;
+
+        // Verificar autenticación al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarPaginaGestion();
+            cargarEmpleados();
+        });
+
+        async function cargarEmpleados() {
+            try {
+                const result = await apiService.getEmpleados();
+                if (result.success && result.data) {
+                    empleados = result.data;
+                    mostrarEmpleados();
+                    configurarPaginacion();
+                } else {
+                    mostrarToast('Error al cargar empleados: ' + (result.message || 'Error desconocido'), 'error');
+                }
+            } catch (error) {
+                manejarErrorAPI(error, 'Error al cargar empleados');
+            }
+        }
+
+        function mostrarEmpleados() {
+            const tbody = document.getElementById('empleadosBody');
+            const inicio = (paginaActual - 1) * empleadosPorPagina;
+            const fin = inicio + empleadosPorPagina;
+            const empleadosPagina = empleados.slice(inicio, fin);
+
+            tbody.innerHTML = '';
+
+            empleadosPagina.forEach(empleado => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${empleado.EmpleadoID}</td>
+                    <td>${empleado.Apellido || ''}</td>
+                    <td>${empleado.Nombre || ''}</td>
+                    <td>${empleado.Telefono || ''}</td>
+                    <td>${empleado.Email || ''}</td>
+                    <td>${empleado.Especialidad || ''}</td>
+                    <td>
+                        <button onclick="editarEmpleado(${empleado.EmpleadoID})" class="btn-small btn-secondary">
+                            Editar
+                        </button>
+                        <button onclick="eliminarEmpleado(${empleado.EmpleadoID})" class="btn-small btn-danger">
+                            Eliminar
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            actualizarPaginacion();
+        }
+
+        function configurarPaginacion() {
+            cambiarPaginaFunc = configurarPaginacion(empleados, empleadosPorPagina, 'empleadosBody', generarFilaEmpleado);
+        }
+
+        function generarFilaEmpleado(empleado) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${empleado.EmpleadoID}</td>
+                <td>${empleado.Apellido || ''}</td>
+                <td>${empleado.Nombre || ''}</td>
+                <td>${empleado.Telefono || ''}</td>
+                <td>${empleado.Email || ''}</td>
+                <td>${empleado.Especialidad || ''}</td>
+                <td>
+                    <button onclick="editarEmpleado(${empleado.EmpleadoID})" class="btn-small btn-secondary">
+                        Editar
+                    </button>
+                    <button onclick="eliminarEmpleado(${empleado.EmpleadoID})" class="btn-small btn-danger">
+                        Eliminar
+                    </button>
+                </td>
+            `;
+            return row;
+        }
+
+        function actualizarPaginacion() {
+            const totalPaginas = Math.ceil(empleados.length / empleadosPorPagina);
+            document.getElementById('paginaInfo').textContent = `Página ${paginaActual} de ${totalPaginas}`;
+        }
+
+        function cambiarPagina(direccion) {
+            if (cambiarPaginaFunc) {
+                cambiarPaginaFunc(direccion);
+            }
+        }
+
+        function buscarEmpleados() {
+            const termino = document.getElementById('searchEmpleado').value.toLowerCase();
+            const empleadosFiltrados = empleados.filter(empleado => 
+                (empleado.Nombre && empleado.Nombre.toLowerCase().includes(termino)) ||
+                (empleado.Apellido && empleado.Apellido.toLowerCase().includes(termino)) ||
+                (empleado.Email && empleado.Email.toLowerCase().includes(termino)) ||
+                (empleado.Telefono && empleado.Telefono.includes(termino)) ||
+                (empleado.Especialidad && empleado.Especialidad.toLowerCase().includes(termino))
+            );
+
+            actualizarTabla('empleadosBody', empleadosFiltrados, generarFilaEmpleado);
+        }
+
+        function mostrarFormularioEmpleado() {
+            modoEdicion = false;
+            empleadoEditando = null;
+            document.getElementById('formularioTitulo').textContent = 'Agregar Nuevo Empleado';
+            limpiarFormulario('empleadoForm');
+            mostrarFormulario('formularioEmpleado');
+        }
+
+        function editarEmpleado(empleadoId) {
+            const empleado = empleados.find(e => e.EmpleadoID === empleadoId);
+            if (empleado) {
+                modoEdicion = true;
+                empleadoEditando = empleado;
+                document.getElementById('formularioTitulo').textContent = 'Editar Empleado';
+                llenarFormulario('empleadoForm', {
+                    apellido: empleado.Apellido || '',
+                    nombre: empleado.Nombre || '',
+                    telefono: empleado.Telefono || '',
+                    email: empleado.Email || '',
+                    especialidad: empleado.Especialidad || ''
+                });
+                mostrarFormulario('formularioEmpleado');
+            }
+        }
+
+        async function eliminarEmpleado(empleadoId) {
+            if (!confirmarEliminacion('¿Estás seguro de que quieres eliminar este empleado?')) {
+                return;
+            }
+
+            try {
+                const result = await apiService.deleteEmpleado(empleadoId);
+                if (result.success) {
+                    manejarExitoAPI('Empleado eliminado correctamente', cargarEmpleados);
+                } else {
+                    manejarErrorAPI(new Error(result.message), 'Error al eliminar empleado');
+                }
+            } catch (error) {
+                manejarErrorAPI(error, 'Error al eliminar empleado');
+            }
+        }
+
+        // Manejar envío del formulario
+        document.getElementById('empleadoForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            if (!validarFormulario(formData)) {
+                return;
+            }
+
+            const empleadoData = {
+                Apellido: formData.get('apellido'),
+                Nombre: formData.get('nombre'),
+                Telefono: formData.get('telefono'),
+                Email: formData.get('email'),
+                Especialidad: formData.get('especialidad')
+            };
+
+            try {
+                let result;
+                if (modoEdicion) {
+                    result = await apiService.updateEmpleado(empleadoEditando.EmpleadoID, empleadoData);
+                } else {
+                    result = await apiService.createEmpleado(empleadoData);
+                }
+
+                if (result.success) {
+                    const mensaje = modoEdicion ? 'Empleado actualizado correctamente' : 'Empleado creado correctamente';
+                    manejarExitoAPI(mensaje, () => {
+                        cerrarFormulario('formularioEmpleado');
+                        cargarEmpleados();
+                    });
+                } else {
+                    manejarErrorAPI(new Error(result.message), 'Error al procesar empleado');
+                }
+            } catch (error) {
+                manejarErrorAPI(error, 'Error de conexión');
+            }
+        });
+
+        function cerrarSesion() {
+            authService.logout();
+        }
+
+        function mostrarToast(mensaje, tipo) {
+            const toast = document.getElementById('toast');
+            toast.textContent = mensaje;
+            toast.className = `toast toast-${tipo}`;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html> 

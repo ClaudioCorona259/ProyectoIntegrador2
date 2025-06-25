@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Turnos - Empleado</title>
     <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="styles/client_view.css">
-    <title>Turnos Empleado</title>
 </head>
 <body>
     <main>
@@ -14,58 +14,63 @@
                 <ul>
                     <img src="Assets/logo-02.svg" alt="logo">
                     <li><a href="index.html">Inicio</a></li>
-                    <li><a href="#Servicios">Nuestros Servicios</a></li>
-                    <li><a href="#Contacto">Contacto</a></li>
+                    <li><a href="index.html#Servicios">Nuestros Servicios</a></li>
+                    <li><a href="index.html#Contacto">Contacto</a></li>
+                </ul>
+                <ul class="header_list">
+                    <li><a href="#" onclick="cerrarSesion()">Cerrar Sesión</a></li>
                 </ul>
             </nav>
         </header>
-        <section class="turnos_section">
-            <header>
-                <h1>Bienvenido a la sección de Empleados</h1>
-                <p>Aquí puedes ver tus turnos y detalles de tu cuenta.</p>
-            </header>
-        <table>
-            <thead>
-                <tr>
-                    <th>Turno</th>
-                    <th>Cliente</th>
-                    <th>Servicio</th>
-                    <th>Fecha</th>
-                    <th>HoraInicio</th>
-                    <th>HoraFin</th>
-                    <th>Estado</th>
-                    <th>FechaModificacion</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Claudio</td>
-                    <td>Coloracion</td>
-                    <td>2025-05-04</td>
-                    <td>09:00</td>
-                    <td>10:00</td>
-                    <td>Pendiente</td>
-                    <td>2025-05-04 08:30:00</td>
-                    <td><button class="btn"><a href="">Modificar</a></button></td>
-                </tr>
-            </tbody>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Claudio</td>
-                    <td>Coloracion</td>
-                    <td>2025-05-04</td>
-                    <td>09:00</td>
-                    <td>10:00</td>
-                    <td>Pendiente</td>
-                    <td>2025-05-04 08:30:00</td>
-                    <td><button class="btn"><a href="">Modificar</a></button></td>
-                </tr>
-            </tbody>
-        </table>
+        <section class="employee-section">
+            <h2>Mis Turnos Asignados</h2>
+            
+            <!-- Filtros -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="filtroFecha">Filtrar por fecha:</label>
+                    <input type="date" id="filtroFecha">
+                </div>
+                <div class="filter-group">
+                    <label for="filtroEstado">Filtrar por estado:</label>
+                    <select id="filtroEstado">
+                        <option value="todos">Todos</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="confirmado">Confirmado</option>
+                        <option value="completado">Completado</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                </div>
+                <button onclick="limpiarFiltros()" class="btn-secondary">Limpiar Filtros</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Servicio</th>
+                            <th>Fecha</th>
+                            <th>Hora Inicio</th>
+                            <th>Hora Fin</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                            <th>Última Modificación</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpo-tabla-turnos">
+                        <!-- Los turnos se cargarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
         </section>
     </main>
+
+    <!-- Scripts -->
+    <script src="js/api-config.js"></script>
+    <script src="js/auth-service.js"></script>
+    <script src="js/turnos-service.js"></script>
+    <script src="js/empleado.js"></script>
 </body>
 </html>
